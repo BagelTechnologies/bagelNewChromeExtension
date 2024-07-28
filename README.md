@@ -38,10 +38,8 @@
 
 ## Procedures: <a name="procedures"></a>
 
-1. Clone this repository.
-2. Change `extensionDescription` and `extensionName` in `messages.json` file.
-3. Install pnpm globally: `npm install -g pnpm` (check your node version >= 18.12.0)
-4. Run `pnpm install`
+1. Install pnpm globally: `npm install -g pnpm` (check your node version >= 18.12.0)
+2. Run `pnpm install`
 
 ## And next, depending on the needs:
 
