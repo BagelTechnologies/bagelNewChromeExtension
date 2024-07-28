@@ -7,9 +7,8 @@
 ![](https://badges.aleen42.com/src/vitejs.svg)
 
 </div>
-## Table of Contents
 
-- [Intro](#intro)
+## Table of Contents
 - [Features](#features)
 - [Structure](#structure)
     - [ChromeExtension](#chrome-extension)
@@ -22,11 +21,6 @@
 - [Reference](#reference)
 - [Star History](#starhistory)
 - [Contributors](#contributors)
-
-## Intro <a name="intro"></a>
-
-This boilerplate is made for creating chrome extensions using React and Typescript.
-> The focus was on improving the build speed and development experience with Vite(Rollup) & Turborepo.
 
 ## Features <a name="features"></a>
 
