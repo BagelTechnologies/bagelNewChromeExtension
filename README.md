@@ -19,8 +19,6 @@
         - [Chrome](#chrome)
         - [Firefox](#firefox)
 - [Reference](#reference)
-- [Star History](#starhistory)
-- [Contributors](#contributors)
 
 ## Features <a name="features"></a>
 
