@@ -5,6 +5,8 @@ import { useHover } from '@mantine/hooks';
 import { getSuggestions } from '@src/Api';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAppContext } from '@src/AppContext';
+import { appStorage } from '@extension/storage';
+import { useStorageSuspense } from '@extension/shared';
 
 type NewRequestFormKeys =
   | 'evidenceTitle'
@@ -45,6 +47,8 @@ export function CreateNewModal() {
   // const apiClient = new APIClient(token);
 
   const { appState } = useAppContext();
+  const _appStorage = useStorageSuspense(appStorage);
+
   const { hovered: suggestedIdeasHovered } = useHover();
 
   const [matchesIdeas, setMatchesIdeas] = useState<any[]>([]);
@@ -127,6 +131,18 @@ export function CreateNewModal() {
       newRequestForm.setFieldValue('priority', appState?.defaultRequestPriority?.toLowerCase());
     }
   }, [appState?.requestPriorities]);
+
+  useEffect(() => {
+    if (_appStorage.title && _appStorage.title !== newRequestForm.values.evidenceTitle) {
+      newRequestForm.setFieldValue('evidenceTitle', _appStorage.title);
+      onInputBlur();
+    }
+
+    if (_appStorage.description && _appStorage.description !== newRequestForm.values.evidenceTitle) {
+      newRequestForm.setFieldValue('evidenceDescription', _appStorage.description);
+      onInputBlur();
+    }
+  }, [_appStorage.title, _appStorage.description]);
 
   return (
     <NewRequestForm

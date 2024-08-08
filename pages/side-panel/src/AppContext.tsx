@@ -55,7 +55,7 @@ const initialAppState: AppState = {
   currentAccount: null,
   showCommittedDate: null,
   custom_objects: [],
-  showDomain: true,
+  showDomain: false,
 };
 
 const AppContext = createContext<_AppContext>({

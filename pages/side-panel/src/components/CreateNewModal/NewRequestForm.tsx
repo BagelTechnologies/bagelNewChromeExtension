@@ -21,6 +21,7 @@ import { closeAllModals } from '@mantine/modals';
 import { useAppContext } from '@src/AppContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SuggestedSearch } from './SuggestedSearch';
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 
 interface ItemProps extends ComponentPropsWithoutRef<'div'> {
   value: string;
@@ -185,8 +186,8 @@ export function NewRequestForm({
           //     fontSize: 16,
           //   },
           // }}
-          label="Area"
-          placeholder="Choose Product Area"
+          label="Product area"
+          placeholder="Choose Product area"
           data={
             appState?.components
               ?.filter((component: any) => {
@@ -235,9 +236,15 @@ export function NewRequestForm({
           description={appState.showDomain && newRequestForm.values.domainId == '' ? 'Select domain first' : undefined}
         />
 
-        <Group position="left" mt={20} mx={mx}>
-          <Button h={40} loading={CreateRequestLoading} sx={{ backgroundColor: '#5B60E3' }} w="50%" type="submit">
-            Submit
+        <Group position="right" my={20} mx={mx}>
+          <Button
+            leftIcon={<IconArrowNarrowRight size={16} />}
+            h={40}
+            loading={CreateRequestLoading}
+            sx={{ backgroundColor: '#5B60E3' }}
+            w="50%"
+            type="submit">
+            Create request
           </Button>
         </Group>
       </Stack>

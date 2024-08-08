@@ -1,5 +1,6 @@
 import '@src/Options.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
+// eslint-disable-next-line import/named
 import { appStorage } from '@extension/storage';
 import { Box, Center, Image, Paper, Avatar, Text, Button } from '@mantine/core';
 import { useAuth0 } from '@auth0/auth0-react';

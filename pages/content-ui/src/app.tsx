@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import { Button } from '@mantine/core';
-import { appStorage } from '@extension/storage';
+import { appStorage } from '../../../packages/storage';
+// import { useStorageSuspense } from '../../../packages/shared';
 
 export default function App() {
   const [tooltip, setTooltip] = useState({ show: false, text: '', x: 0, y: 0 });
@@ -35,19 +36,17 @@ export default function App() {
   }, []);
 
   const handleAddAsTitle = async () => {
-    const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
-    await chrome.sidePanel.open({ tabId: tab.id! });
-
-    // console.log('Add as Title:', tooltip.text);
+    console.log('Add as Title:', tooltip.text);
     await appStorage.setTitle(tooltip.text);
-
-    // setTooltip({ show: false, text: '', x: 0, y: 0 });
-  };
-
-  const handleAddAsDescription = () => {
-    console.log('Add as Description:', tooltip.text);
     setTooltip({ show: false, text: '', x: 0, y: 0 });
   };
+
+  const handleAddAsDescription = async () => {
+    console.log('Add as Description:', tooltip.text);
+    await appStorage.setDescription(tooltip.text);
+    setTooltip({ show: false, text: '', x: 0, y: 0 });
+  };
+  // const _appStorage = useStorageSuspense(appStorage);
 
   return (
     <div>
@@ -57,29 +56,41 @@ export default function App() {
       </Button> */}
       {tooltip.show && (
         <div
-          className="absolute tooltip rounded shadow-lg p-2 bg-gray-100 text-red-500 -mt-5"
+          className="absolute tooltip rounded-xl shadow-lg p-1 bg-gray-100 -mt-0"
           style={{
             left: `${tooltip.x}px`,
             top: `${tooltip.y}px`,
             zIndex: 5,
           }}>
           {/* <div className="mb-2">{tooltip.text}</div> */}
-          <div className="flex space-x-2">
-            <button
-              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-              onClick={async () => {
-                const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
-                await chrome.sidePanel.open({ tabId: tab.id! });
+          {/* <div className="mb-2">{_appStorage.tab}</div>
+          <div className="mb-2">{_appStorage.title}</div> */}
 
-                // console.log('Add as Title:', tooltip.text);
-                // setTooltip({ show: false, text: '', x: 0, y: 0 });
-              }}>
-              Add as Title
+          <div className="flex space-x-1">
+            <img style={{ maxWidth: '20px' }} alt="Add as Text" src={chrome.runtime.getURL('content-ui/favicon.svg')} />
+            <button
+              onClick={handleAddAsTitle}
+              className="bg-indigo-600 text-white px-1 py-1 rounded-lg hover:bg-indigo-800">
+              <img
+                style={{
+                  filter: 'invert(100%) sepia(0%) saturate(7500%) hue-rotate(153deg) brightness(111%) contrast(109%)',
+                }}
+                alt="Add as Title"
+                title="Add as Title"
+                src={chrome.runtime.getURL('content-ui/letter-t.svg')}
+              />
             </button>
             <button
-              className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-              onClick={handleAddAsDescription}>
-              Add as Description
+              onClick={handleAddAsDescription}
+              className="bg-indigo-600 text-white px-1 py-1 rounded-lg hover:bg-indigo-800">
+              <img
+                style={{
+                  filter: 'invert(100%) sepia(0%) saturate(7500%) hue-rotate(153deg) brightness(111%) contrast(109%)',
+                }}
+                alt="Add as Description"
+                title="Add as Description"
+                src={chrome.runtime.getURL('content-ui/align-left.svg')}
+              />
             </button>
           </div>
         </div>

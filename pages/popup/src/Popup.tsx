@@ -104,6 +104,9 @@ const Popup = () => {
           <Button mt="sm" radius="xl" onClick={openSidePanel}>
             Side Panel
           </Button>
+          {/* <Button mt="sm" radius="xl" onClick={injectContentScript}>
+          injectContentScript
+          </Button> */}
         </Group>
       </Box>
     </Box>

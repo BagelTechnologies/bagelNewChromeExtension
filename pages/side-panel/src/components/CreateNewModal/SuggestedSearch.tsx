@@ -6,7 +6,7 @@ import { UseFormReturnType } from '@mantine/form';
 import { NewRequestFormType } from '.';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 // import { searchIdeas } from "../../Api";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import { useDebouncedValue } from '@mantine/hooks';
 // import { useAppContext } from "@src/AppContext";
 import { IdeasCard } from '../IdeasCard';
@@ -68,6 +68,10 @@ export function SuggestedSearch({
   // useEffect(() => {
   //   fetchOptions(debounced);
   // }, [debounced]);
+
+  useEffect(() => {
+    embla?.reInit({});
+  }, [loading.suggestions]);
 
   return (
     <Box>
@@ -134,9 +138,9 @@ export function SuggestedSearch({
         onSlideChange={index => setSlidesInView(index + 1)}
         // includeGapInSize
         withControls={false}>
-        <LoadingOverlay visible={loading.suggestions} overlayBlur={2} />
         {matchesIdeas.map((idea, index) => (
           <Carousel.Slide key={index} maw="calc(100% - (2rem - 4px))">
+            <LoadingOverlay visible={loading.suggestions} overlayBlur={2} />
             <IdeasCard newRequestForm={newRequestForm} item={idea} attached={idea.attached} />
           </Carousel.Slide>
         ))}
