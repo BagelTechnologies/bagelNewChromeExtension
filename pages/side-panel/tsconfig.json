@@ -6,7 +6,8 @@
       "@src/*": ["src/*"]
     },
     "jsx": "react-jsx",
-    "types": ["chrome"]
+    "types": ["chrome"],
+    "module": "esnext" // Add this line to set the module option
   },
   "include": ["src"]
 }

@@ -30,7 +30,26 @@
   "type": "module",
   "dependencies": {
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+
+    "@auth0/auth0-react": "^2.1.1",
+    "axios": "^1.4.0",
+
+    "@emotion/react": "^11.10.5",
+    "@mantine/core": "^5.10.3",
+    "@mantine/dates": "^5.10.3",
+    "@mantine/form": "^5.9.5",
+    "@mantine/hooks": "^5.10.3",
+    "@mantine/modals": "^5.9.4",
+    "@mantine/carousel":"^5.4.2",
+    "@tabler/icons-react": "^2.4.0",
+    "embla-carousel-react":"^7.0.0",
+    "@tiptap/extension-mention": "^2.2.3",
+    "@tiptap/extension-placeholder": "^2.2.3",
+    "@tiptap/pm": "^2.2.3",
+    "@tiptap/react": "^2.2.3",
+    "@tiptap/starter-kit": "^2.2.3",
+    "@tiptap/suggestion": "^2.2.3"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
