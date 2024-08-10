@@ -37,13 +37,17 @@ export default function App() {
 
   const handleAddAsTitle = async () => {
     console.log('Add as Title:', tooltip.text);
-    await appStorage.setTitle(tooltip.text);
+    const currentUrl = window?.location?.href;
+
+    await appStorage.setTitle(tooltip.text, currentUrl);
     setTooltip({ show: false, text: '', x: 0, y: 0 });
   };
 
   const handleAddAsDescription = async () => {
     console.log('Add as Description:', tooltip.text);
-    await appStorage.setDescription(tooltip.text);
+    const currentUrl = window?.location?.href;
+
+    await appStorage.setDescription(tooltip.text, currentUrl);
     setTooltip({ show: false, text: '', x: 0, y: 0 });
   };
   // const _appStorage = useStorageSuspense(appStorage);
@@ -56,7 +60,7 @@ export default function App() {
       </Button> */}
       {tooltip.show && (
         <div
-          className="absolute tooltip rounded-xl shadow-lg p-1 bg-gray-100 -mt-0"
+          className="absolute tooltip rounded-xl shadow-lg p-1 bg-white border border-gray-300 -mt-0"
           style={{
             left: `${tooltip.x}px`,
             top: `${tooltip.y}px`,
@@ -66,7 +70,7 @@ export default function App() {
           {/* <div className="mb-2">{_appStorage.tab}</div>
           <div className="mb-2">{_appStorage.title}</div> */}
 
-          <div className="flex space-x-1">
+          <div className="flex space-x-1" style={{ direction: 'ltr' }}>
             <img style={{ maxWidth: '20px' }} alt="Add as Text" src={chrome.runtime.getURL('content-ui/favicon.svg')} />
             <button
               onClick={handleAddAsTitle}

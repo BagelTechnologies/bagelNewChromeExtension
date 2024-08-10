@@ -22,6 +22,8 @@ import { useAppContext } from '@src/AppContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SuggestedSearch } from './SuggestedSearch';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
+import { useStorageSuspense } from '@extension/shared';
+import { appStorage } from '@extension/storage';
 
 interface ItemProps extends ComponentPropsWithoutRef<'div'> {
   value: string;
@@ -67,13 +69,46 @@ export function NewRequestForm({
   mx?: SystemProp<SpacingValue> | undefined;
 }) {
   const auth0 = useAuth0();
+  const _appStorage = useStorageSuspense(appStorage);
+
   const { appState } = useAppContext();
   const [CreateRequestLoading, setCreateRequestLoading] = useState(false);
   const handleCreateRequest = (body: any) => {
     setCreateRequestLoading(true);
-    createNewRequest(body, auth0)
-      .then((res: any) => {
-        console.log(res);
+    createNewRequest(
+      {
+        ...body,
+        title_origin_url: _appStorage.titleCurrentUrl,
+        description_origin_url: _appStorage.descriptionCurrentUrl,
+      },
+      auth0,
+    )
+      .then(async (res: any) => {
+        console.log({ handleCreateRequest: res });
+        await newRequestForm.setValues({
+          evidenceTitle: '',
+          evidenceDescription: '',
+          relatedObject: '',
+          orgId: '',
+          orgName: '',
+          priority: '',
+          domain: '',
+          domainId: '',
+          area: '',
+          areaId: '',
+          ideaId: '',
+          match_id: '',
+          match_type: '',
+          match_text_id: '',
+          match_chat_id: '',
+          match_yes_score: '',
+
+          suggestedSearch: '',
+          disabledInputs: [],
+        });
+        await appStorage.setTab('my-requests');
+        await appStorage.setDescription(null, null);
+        await appStorage.setTitle(null, null);
       })
       .finally(() => {
         setCreateRequestLoading(false);

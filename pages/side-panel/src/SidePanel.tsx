@@ -2,18 +2,26 @@ import '@src/SidePanel.css';
 import { useStorageSuspense, withErrorBoundary, withSuspense } from '@extension/shared';
 import { appStorage } from '@extension/storage';
 // import { ComponentPropsWithoutRef } from 'react';
-import { Anchor, Group, SegmentedControl } from '@mantine/core';
+import { Anchor, Button, Card, Center, Group, SegmentedControl, Text } from '@mantine/core';
 import { useAuth0 } from '@auth0/auth0-react';
 import { CreateNewModal } from './components/CreateNewModal';
+import { IconLogin } from '@tabler/icons-react';
+// import { useEffect } from 'react';
 
 const SidePanel = () => {
   const app = useStorageSuspense(appStorage);
   const auth0 = useAuth0();
 
-  if (!auth0.isLoading && !auth0.isAuthenticated) {
-    auth0.loginWithRedirect();
-    return <div>Redirecting to login...</div>;
-  }
+  // if (!auth0.isLoading && !auth0.isAuthenticated) {
+  //   auth0.loginWithPopup()
+  //   return <div>Redirecting to login...</div>;
+  // }
+
+  // useEffect(() => {
+  //   if (!auth0.isLoading && !auth0.isAuthenticated) {
+  //     auth0.loginWithPopup()
+  //   }
+  // }, [auth0])
 
   return (
     <div className={`App`}>
@@ -23,7 +31,10 @@ const SidePanel = () => {
           <Anchor
             sx={{
               fontSize: 12,
-            }}>
+            }}
+            //@ts-ignore
+            href={import.meta.env.VITE_MAIN_APP_URL}
+            target="_blank">
             Go to dashboard
           </Anchor>
         </Group>
@@ -41,7 +52,29 @@ const SidePanel = () => {
           }}
         />
       </header>
-      <main>{app.tab === 'create-new-request' && <CreateNewModal />}</main>
+      <main>
+        {!auth0.isAuthenticated && (
+          <Card
+            mx="1rem"
+            sx={{
+              textAlign: 'center',
+              alignItems: 'center',
+            }}
+            withBorder
+            radius="md">
+            <Center>
+              <IconLogin size={22} />
+            </Center>
+            <Text align="center" mt="md">
+              Please log in first.
+            </Text>
+            <Button mt="sm" miw={180} radius="xl" onClick={async () => await auth0.loginWithPopup()}>
+              Login
+            </Button>
+          </Card>
+        )}
+        {auth0.isAuthenticated && app.tab === 'create-new-request' && <CreateNewModal />}
+      </main>
     </div>
   );
 };
