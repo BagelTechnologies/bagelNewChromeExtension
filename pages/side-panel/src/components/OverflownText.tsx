@@ -2,7 +2,7 @@
 import { Tooltip, Text, TextProps } from '@mantine/core';
 import { useRef, useState, useEffect } from 'react';
 
-export function OverflownText({ children, ...props }: TextProps) {
+export function OverflownText({ children, maw, ...props }: TextProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isOverflown, setIsOverflown] = useState(false);
   useEffect(() => {
@@ -26,7 +26,7 @@ export function OverflownText({ children, ...props }: TextProps) {
       }}
       label={children}
       disabled={!isOverflown}
-      maw={'50vw'}
+      maw={maw || '80vw'}
       multiline>
       <Text ref={ref} {...props}>
         {children}

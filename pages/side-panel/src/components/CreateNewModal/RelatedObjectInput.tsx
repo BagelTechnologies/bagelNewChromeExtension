@@ -75,13 +75,8 @@ export function RelatedObjectInput({
     <div style={{ position: 'relative' }}>
       <Autocomplete
         mx={mx}
-        // styles={{
-        //   label: {
-        //     fontWeight: 600,
-        //   },
-        // }}
         label={`Related Customer`}
-        required
+        withAsterisk
         placeholder="Select related customer"
         icon={<IconSearch size={16} />}
         data={searchResults}
@@ -90,6 +85,7 @@ export function RelatedObjectInput({
           newRequestForm.setValues({ orgId: item.id, orgName: item.value });
         }}
         {...newRequestForm.getInputProps('orgName')}
+        error={newRequestForm.getInputProps('orgId').error}
         disabled={newRequestForm.values.disabledInputs.includes('orgId')}
       />
     </div>

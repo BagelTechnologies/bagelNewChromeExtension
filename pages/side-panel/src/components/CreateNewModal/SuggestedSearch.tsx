@@ -94,7 +94,7 @@ export function SuggestedSearch({
               sx={{ textAlign: 'center', color: matchesIdeas.length === 0 || loading.suggestions ? 'gray' : 'black' }}
               size={14}
               w={35}>
-              {slidesInView}/{matchesIdeas.length}
+              {matchesIdeas.length > 0 ? `${slidesInView}/${matchesIdeas.length}` : matchesIdeas.length}
             </Text>
             <ActionIcon onClick={handleNext}>
               <IconChevronRight size={16} />

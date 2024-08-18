@@ -1,0 +1,51 @@
+.tiptap {
+  > * + * {
+    margin-top: 0;
+  }
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgb(206, 212, 218);
+  font-size: 14px;
+}
+
+.tiptap > *:first-child {
+  margin-top: 0;
+}
+
+.tiptap > *:last-child {
+  margin-bottom: 0;
+}
+
+.rightSection {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  width: 36px;
+}
+
+.wrap {
+  position: relative;
+  display: flex;
+}
+
+.mention {
+  color: #1c7ed6;
+  font-weight: 500;
+  box-decoration-break: clone;
+  padding: 0.1rem 0rem;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}

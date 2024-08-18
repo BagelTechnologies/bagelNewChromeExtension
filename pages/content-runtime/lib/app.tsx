@@ -26,6 +26,8 @@ export default function App() {
         document.removeEventListener('selectionchange', handleSelectionChange);
       };
     }
+
+    return undefined; // or return null;
   }, []);
 
   return (

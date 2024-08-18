@@ -20,6 +20,20 @@ export const getSyncedIdeas = async (ticketId: string, auth0: any): Promise<any>
     throw e;
   }
 };
+
+export const getMyRequests = async (auth0: any): Promise<any> => {
+  try {
+    const config = await getAuthHeaders(auth0);
+    //@ts-ignore
+    const url = import.meta.env.VITE_APP_API_DOMAIN + '/product_apps/ideas/my-requests';
+    const response = await axios.post(url, {}, config);
+    return response.data.requests;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const listFields = async (auth0: any): Promise<any> => {
   try {
     const config = await getAuthHeaders(auth0);
@@ -75,6 +89,80 @@ export const searchOrgs = async (query: string, auth0: any): Promise<any> => {
     //@ts-ignore
     const url = import.meta.env.VITE_APP_API_DOMAIN + '/product_apps/ideas/searchOrgs';
     const response = await axios.post(url, { query }, config);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const addCommentToRequest = async (
+  auth0: any,
+  requestId: string,
+  commentText: string,
+  usersMentioned: any[],
+  ideaId?: string,
+): Promise<any> => {
+  try {
+    const config = await getAuthHeaders(auth0);
+    //@ts-ignore
+    const url = `${import.meta.env.VITE_APP_API_DOMAIN}/product_apps/ideas/requests/comment`;
+    const response = await axios.post(
+      url,
+      {
+        ideaId,
+        requestId,
+        comment: {
+          text: commentText,
+          usersMentioned,
+        },
+      },
+      config,
+    );
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const deleteCommentFromRequest = async (auth0: any, commentId: string, ideaId?: string): Promise<any> => {
+  try {
+    const config = await getAuthHeaders(auth0);
+    //@ts-ignore
+    const url = `${import.meta.env.VITE_APP_API_DOMAIN}/product_apps/ideas/requests/comment/${commentId}/delete`;
+    const response = await axios.post(url, { ideaId }, config);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const searchUsers = async (query: string, auth0: any): Promise<any> => {
+  try {
+    const config = await getAuthHeaders(auth0);
+    //@ts-ignore
+    const url = `${import.meta.env.VITE_APP_API_DOMAIN}/product_apps/ideas/search/members`;
+    const response = await axios.post(url, { query }, config);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const updateRequestComment = async (
+  auth0: any,
+  commentId: string,
+  updatedComment: any,
+  ideaId?: string,
+): Promise<any> => {
+  try {
+    const config = await getAuthHeaders(auth0);
+    //@ts-ignore
+    const url = `${import.meta.env.VITE_APP_API_DOMAIN}/product_apps/ideas/requests/comment/${commentId}`;
+    const response = await axios.post(url, { ideaId, comment: updatedComment }, config);
     return response.data;
   } catch (e) {
     console.error(e);

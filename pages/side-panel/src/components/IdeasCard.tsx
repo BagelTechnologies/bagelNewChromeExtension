@@ -8,6 +8,7 @@ import { OverflownText } from './OverflownText';
 import HtmlContent from './HtmlContent';
 import { NewRequestFormType } from './CreateNewModal';
 import { IconArrowRight, IconExternalLink, IconLayersLinked, IconX } from '@tabler/icons-react';
+// import { BusinessNameNotification } from './icons/x-symbol-svgrepo-com';
 
 export function IdeasCard({
   item,
@@ -109,17 +110,40 @@ export function IdeasCard({
         p={10}
         h={280}
         sx={{
-          overflow: 'scroll',
+          overflowY: 'scroll',
+          overflowX: 'unset',
         }}>
+        <Group p={0} spacing={8} mb={5} noWrap>
+          <Tooltip label={`Priority: ${item.priority}`}>
+            <img style={{ height: 16 }} src={chrome.runtime.getURL('side-panel/nice-to-have.svg')} alt="nice to have" />
+          </Tooltip>
+          <Tooltip label="Status">
+            <Box>
+              <OverflownText
+                px={4}
+                maw={'80vw'}
+                size={12}
+                weight={600}
+                lineClamp={1}
+                color="#5C5CEB"
+                sx={{
+                  background: '#5C5CEB1A',
+                  borderRadius: 4,
+                }}>
+                {item?.status || 'Unassigned'}
+              </OverflownText>
+            </Box>
+          </Tooltip>
+        </Group>
         <Box mb="xs">
-          <OverflownText size={15} weight={500} lineClamp={1}>
+          <OverflownText size={15} weight={500} lineClamp={2}>
             {item?.title}
           </OverflownText>
 
           <Spoiler
             maxHeight={48}
             showLabel="See more"
-            hideLabel="See less"
+            hideLabel="Less"
             styles={{
               control: {
                 color: '#5C5CEA',

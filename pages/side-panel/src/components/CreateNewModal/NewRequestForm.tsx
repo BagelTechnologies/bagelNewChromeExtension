@@ -10,6 +10,7 @@ import {
   SystemProp,
   // eslint-disable-next-line import/named
   SpacingValue,
+  ActionIcon,
 } from '@mantine/core';
 // eslint-disable-next-line import/named
 import { UseFormReturnType } from '@mantine/form';
@@ -21,7 +22,7 @@ import { closeAllModals } from '@mantine/modals';
 import { useAppContext } from '@src/AppContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SuggestedSearch } from './SuggestedSearch';
-import { IconArrowNarrowRight } from '@tabler/icons-react';
+import { IconArrowNarrowRight, IconX } from '@tabler/icons-react';
 import { useStorageSuspense } from '@extension/shared';
 import { appStorage } from '@extension/storage';
 
@@ -134,11 +135,6 @@ export function NewRequestForm({
       <Stack spacing={12}>
         <Textarea
           mx={mx}
-          // styles={{
-          //   label: {
-          //     fontSize: 16,
-          //   },
-          // }}
           label="Description"
           placeholder="What problem or need should it solve? Who is this for (persona)?"
           {...newRequestForm.getInputProps('evidenceDescription')}
@@ -147,6 +143,20 @@ export function NewRequestForm({
           withAsterisk
           onBlur={onBlur}
           disabled={newRequestForm.values.disabledInputs.includes('evidenceDescription')}
+          rightSection={
+            newRequestForm.values.evidenceDescription !== '' ? (
+              <ActionIcon
+                size="sm"
+                variant="transparent"
+                onClick={async () => {
+                  newRequestForm.setFieldValue('evidenceDescription', '');
+                  await appStorage.setDescription(null, null);
+                }}
+                p={0}>
+                <IconX radius="50%" size={14} />
+              </ActionIcon>
+            ) : undefined
+          }
         />
 
         <SuggestedSearch
@@ -158,26 +168,30 @@ export function NewRequestForm({
 
         <TextInput
           mx={mx}
-          // styles={{
-          //   label: {
-          //     fontSize: 16,
-          //   },
-          // }}
           label="Title"
           placeholder="What would you like to add?"
           {...newRequestForm.getInputProps('evidenceTitle')}
           withAsterisk
           onBlur={onBlur}
           disabled={newRequestForm.values.disabledInputs.includes('evidenceTitle')}
+          rightSection={
+            newRequestForm.values.evidenceTitle !== '' ? (
+              <ActionIcon
+                size="sm"
+                variant="transparent"
+                onClick={async () => {
+                  newRequestForm.setFieldValue('evidenceTitle', '');
+                  await appStorage.setTitle(null, null);
+                }}
+                p={0}>
+                <IconX radius="50%" size={14} />
+              </ActionIcon>
+            ) : undefined
+          }
         />
         <RelatedObjectInput newRequestForm={newRequestForm} mx={mx} />
         <Select
           mx={mx}
-          // styles={{
-          //   label: {
-          //     fontSize: 16,
-          //   },
-          // }}
           label="Priority"
           placeholder="Choose priority"
           data={appState.requestPriorities.map((priority: any) => ({
@@ -192,11 +206,6 @@ export function NewRequestForm({
         {appState.showDomain && (
           <Select
             mx={mx}
-            // styles={{
-            //   label: {
-            //     fontSize: 16,
-            //   },
-            // }}
             label="Domain"
             placeholder="Choose domain"
             data={appState.domains.map((domain: any) => ({
@@ -208,6 +217,7 @@ export function NewRequestForm({
               newRequestForm.setValues({ areaId: '', area: '' });
             }}
             value={newRequestForm.values.domainId}
+            error={newRequestForm.getInputProps('domainId').error}
             // {...newRequestForm.getInputProps("domain")}
             disabled={newRequestForm.values.disabledInputs.includes('domainId')}
             withAsterisk

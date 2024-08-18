@@ -2,10 +2,11 @@ import '@src/SidePanel.css';
 import { useStorageSuspense, withErrorBoundary, withSuspense } from '@extension/shared';
 import { appStorage } from '@extension/storage';
 // import { ComponentPropsWithoutRef } from 'react';
-import { Anchor, Button, Card, Center, Group, SegmentedControl, Text } from '@mantine/core';
+import { Anchor, Box, Button, Card, Center, Group, SegmentedControl, Text } from '@mantine/core';
 import { useAuth0 } from '@auth0/auth0-react';
 import { CreateNewModal } from './components/CreateNewModal';
 import { IconLogin } from '@tabler/icons-react';
+import { MyRequests } from './components/MyRequests';
 // import { useEffect } from 'react';
 
 const SidePanel = () => {
@@ -31,6 +32,7 @@ const SidePanel = () => {
           <Anchor
             sx={{
               fontSize: 12,
+              color: '#5C5CEB',
             }}
             //@ts-ignore
             href={import.meta.env.VITE_MAIN_APP_URL}
@@ -73,7 +75,12 @@ const SidePanel = () => {
             </Button>
           </Card>
         )}
-        {auth0.isAuthenticated && app.tab === 'create-new-request' && <CreateNewModal />}
+        <Box hidden={!(auth0.isAuthenticated && app.tab === 'create-new-request')}>
+          <CreateNewModal />
+        </Box>
+        <Box hidden={!(auth0.isAuthenticated && app.tab === 'my-requests')}>
+          <MyRequests />
+        </Box>
       </main>
     </div>
   );

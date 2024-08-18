@@ -87,6 +87,7 @@ export function CreateNewModal() {
       evidenceDescription: value => (value.trim().length > 2 ? null : 'Please provide a valid evidence description'),
       domainId: value => (!showDomain || value.trim().length > 0 ? null : 'Please choose a domain'),
       areaId: value => (value.trim().length > 0 ? null : 'Please choose an area'),
+      orgId: value => (value.trim().length > 0 ? null : 'Please choose related customer'),
     },
   });
 
@@ -133,12 +134,20 @@ export function CreateNewModal() {
   }, [appState?.requestPriorities]);
 
   useEffect(() => {
-    if (_appStorage.title && _appStorage.title !== newRequestForm.values.evidenceTitle) {
+    if (
+      _appStorage.title &&
+      _appStorage.title !== newRequestForm.values.evidenceTitle &&
+      (newRequestForm.values.evidenceTitle !== '' || _appStorage.title != null)
+    ) {
       newRequestForm.setFieldValue('evidenceTitle', _appStorage.title);
       onInputBlur();
     }
 
-    if (_appStorage.description && _appStorage.description !== newRequestForm.values.evidenceTitle) {
+    if (
+      _appStorage.description &&
+      _appStorage.description !== newRequestForm.values.evidenceDescription &&
+      (newRequestForm.values.evidenceDescription !== '' || _appStorage.description != null)
+    ) {
       newRequestForm.setFieldValue('evidenceDescription', _appStorage.description);
       onInputBlur();
     }
