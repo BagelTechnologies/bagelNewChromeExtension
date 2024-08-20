@@ -39,6 +39,7 @@ import ArrowLeft from './icons/ArrowLeft';
 import DisplayIcon from './icons/DisplayIcon';
 import { GeneralIcon, GeneralPurpuleIcon, PendoIcon, VivunIcon } from '../components/icons/x-symbol-svgrepo-com';
 import ProductBoardIcon from './icons/ProductBoardIcon';
+import ChromeIcon from './icons/ChromeIcon';
 
 export const SourceIcon = (props: { sourceName: string; width?: number; height?: number }) => {
   const icons: any = {
@@ -92,6 +93,7 @@ export const SourceIcon = (props: { sourceName: string; width?: number; height?:
     hero: <VivunIcon />,
     pendo: <PendoIcon />,
     'n/a': <GeneralPurpuleIcon />,
+    'chrome extension': <ChromeIcon height={props.height} width={props.width} />,
   };
   return props.sourceName ? <>{icons[props.sourceName.toLowerCase()] || <GeneralPurpuleIcon />}</> : <GeneralIcon />;
 };

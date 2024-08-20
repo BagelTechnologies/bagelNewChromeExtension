@@ -40,7 +40,7 @@ export function RelatedObjectInput({
       const options = (
         Array.isArray(accounts) && accounts.length > 0 ? accounts.filter(op => op.name !== null) : []
       ).map((item: any) => ({
-        id: item._id,
+        id: item.orgId,
         value: item.name,
       }));
 
