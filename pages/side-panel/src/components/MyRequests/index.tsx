@@ -70,16 +70,6 @@ export function MyRequests() {
   };
 
   const requestsWithNotifications = requests.filter((request: any) => request?.unreadNotificationsCount > 0);
-  useEffect(() => {
-    if (requestsWithNotifications.length > 0) {
-      chrome.action.setBadgeBackgroundColor({ color: '#5C5CEB' });
-      chrome.action.setBadgeText({
-        text: `${requestsWithNotifications.length > 10 ? '10+' : requestsWithNotifications.length}`,
-      });
-    } else {
-      chrome.action.setBadgeText({ text: '' });
-    }
-  }, [requests]);
 
   return (
     <MentionProvider>

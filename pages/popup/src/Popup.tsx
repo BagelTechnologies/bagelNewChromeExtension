@@ -1,5 +1,5 @@
 import '@src/Popup.css';
-import { getInitials, withErrorBoundary, withSuspense } from '@extension/shared';
+import { getInitials, getUnreadNotificationsCount, withErrorBoundary, withSuspense } from '@extension/shared';
 // import { exampleThemeStorage } from '@extension/storage';
 // import { ComponentPropsWithoutRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -12,6 +12,7 @@ const Popup = () => {
   // const isLight = theme === 'light';
   // const logo = isLight ? 'popup/logo_vertical.svg' : 'popup/logo_vertical_dark.svg';
   const auth0 = useAuth0();
+
   // if (!auth0.isLoading && !auth0.isAuthenticated) {
   //   auth0.loginWithRedirect();
   //   return <div>Redirecting to login...</div>;
@@ -25,6 +26,27 @@ const Popup = () => {
   //     files: ['content-runtime/index.iife.js'],
   //   });
   // };
+
+  useEffect(() => {
+    const fetchUnreadNotifications = async () => {
+      try {
+        const count = await getUnreadNotificationsCount(auth0);
+
+        if (count > 0) {
+          chrome.action.setBadgeBackgroundColor({ color: '#5C5CEB' });
+          chrome.action.setBadgeText({
+            text: `${count > 10 ? '10+' : count}`,
+          });
+        } else {
+          chrome.action.setBadgeText({ text: '' });
+        }
+      } catch (e) {
+        console.error('Failed to fetch unread notifications count', e);
+      }
+    };
+
+    fetchUnreadNotifications();
+  }, []);
 
   const openSidePanel = async () => {
     const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
@@ -49,8 +71,8 @@ const Popup = () => {
     console.log({ auth0 });
     fetchAuthData();
   }, []);
-
-  // console.log({ authData });
+  //@ts-ignore
+  console.log({ env: import.meta.env });
 
   return (
     // <div className={`App ${isLight ? 'bg-slate-50' : 'bg-gray-800'}`}>
