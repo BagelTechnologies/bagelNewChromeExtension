@@ -92,7 +92,7 @@ export function MyRequests() {
       />
       <Box id="RequestCardsContainer">
         {requestsWithNotifications.map((request: any) => (
-          <RequestCard key={request._id} request={request} searchTerm={searchTerm} />
+          <RequestCard key={request._id} request={request} searchTerm={debouncedSearchTerm} />
         ))}
         {requestsWithNotifications.length > 0 && <Divider mx="1rem" my="sm" color="#D8D8DB" />}
         {requests.length > 0 ? (
@@ -100,7 +100,7 @@ export function MyRequests() {
             .filter((request: any) => request?.unreadNotificationsCount === 0)
             .map((request: any, index: number) => (
               <div ref={index === requests.length - 3 ? lastRequestElementRef : null} key={request._id}>
-                <RequestCard request={request} searchTerm={searchTerm} />
+                <RequestCard request={request} searchTerm={debouncedSearchTerm} />
               </div>
             ))
         ) : loading ? (

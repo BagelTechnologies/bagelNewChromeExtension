@@ -8,6 +8,10 @@
   border: 1px solid rgb(206, 212, 218);
   font-size: 14px;
 }
+.ProseMirror {
+  max-height: 6em; /* Assuming each line is roughly 1em tall */
+  overflow-y: auto;
+}
 
 .tiptap > *:first-child {
   margin-top: 0;

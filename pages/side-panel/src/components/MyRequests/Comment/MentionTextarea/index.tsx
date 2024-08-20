@@ -137,7 +137,7 @@ const MentionTextarea = <T,>({
 
   return (
     <Box className="wrap" sx={sx}>
-      <EditorContent style={{ width: '100%', maxHeight: 100 }} editor={editor} />
+      <EditorContent style={{ width: '100%' }} editor={editor} />
       {rightSection && editable && <Box className="rightSection">{enhancedRightSection}</Box>}
     </Box>
   );

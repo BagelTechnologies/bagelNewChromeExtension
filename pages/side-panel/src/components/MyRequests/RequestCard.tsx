@@ -1,15 +1,26 @@
 import { useEffect } from 'react';
-// eslint-disable-next-line import/named
-import { Box, createStyles, Group, Highlight, Spoiler, Text, Tooltip, UnstyledButton } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Button,
+  // eslint-disable-next-line import/named
+  createStyles,
+  Group,
+  Spoiler,
+  Text,
+  Tooltip,
+  UnstyledButton,
+} from '@mantine/core';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { useListState } from '@mantine/hooks';
 import { appStorage } from '@extension/storage';
-import { useStorageSuspense } from '@extension/shared';
+import { getInitials, useStorageSuspense } from '@extension/shared';
 import moment from 'moment';
 import { Comments } from './Comments';
 import { BusinessNameNotification } from '../icons/x-symbol-svgrepo-com';
 import { OverflownText } from '../OverflownText';
 import HtmlContent from '../HtmlContent';
+import { SourceIcon } from '@src/utils/SourceIcon';
 
 const useStyles = createStyles(theme => ({
   resizeHandle: {
@@ -105,7 +116,7 @@ export function RequestCard({ request, searchTerm }: { request: any; searchTerm:
   );
 }
 
-const TopCard = ({ request, searchTerm }: { request: any; searchTerm: string }) => {
+const TopCard = ({ request }: { request: any; searchTerm: string }) => {
   const _appStorage = useStorageSuspense(appStorage);
   const open = request._id.toString() === _appStorage.selectedRequest;
 
@@ -186,7 +197,7 @@ const TopCard = ({ request, searchTerm }: { request: any; searchTerm: string }) 
       {/* Content to scroll */}
       <Box mb="xs" mx="xs">
         <OverflownText size={15} weight={600} lineClamp={2}>
-          <Highlight highlight={searchTerm || ''}>{request.title}</Highlight>
+          {request.title}
         </OverflownText>
 
         <Spoiler
@@ -214,7 +225,7 @@ const TopCard = ({ request, searchTerm }: { request: any; searchTerm: string }) 
               backgroundColor: '#F8F9FA',
             }}>
             <OverflownText color="#585C68" size={15} weight={600} lineClamp={1}>
-              <Highlight highlight={searchTerm || ''}>{request.idea?.title}</Highlight>
+              {request.idea?.title}
             </OverflownText>
 
             <Spoiler
@@ -234,6 +245,85 @@ const TopCard = ({ request, searchTerm }: { request: any; searchTerm: string }) 
           </Box>
         )}
       </Box>
+      <Group mb="xs" mx="xs" spacing={4} hidden={!open}>
+        <Tooltip label="Owner">
+          <Group
+            p={6}
+            noWrap
+            spacing={4}
+            sx={{
+              background: '#5C5CEB1A',
+              borderRadius: 4,
+              height: 26,
+            }}>
+            {request?.owner?.picture ? (
+              <Avatar src={request?.owner?.picture} radius="xl" size="xs" />
+            ) : (
+              <Avatar color="cyan" radius="xl" size="xs">
+                {request?.owner?.name && getInitials(request?.owner?.name)}
+              </Avatar>
+            )}
+            <Text>{request?.owner?.name}</Text>
+          </Group>
+        </Tooltip>
+
+        {request.linkedProductItem && (
+          <Tooltip label="Delivery">
+            <Button
+              styles={{
+                root: {
+                  background: '#5C5CEB1A',
+                  maxWidth: '-webkit-fill-available',
+                },
+                label: {
+                  color: '#000',
+                  fontSize: 14,
+                  fontWeight: 400,
+                },
+              }}
+              color="gray"
+              variant="subtle"
+              compact
+              component="a"
+              href={request?.linkedProductItem?.link}
+              target="_blank"
+              leftIcon={
+                request?.linkedProductItem.origin ? (
+                  <SourceIcon width={14} sourceName={request?.linkedProductItem.origin} />
+                ) : (
+                  <></>
+                )
+              }>
+              {request?.linkedProductItem?.itemKey}
+            </Button>
+          </Tooltip>
+        )}
+
+        {request?.chat && request?.origin && request?.origin !== 'bagel' && (
+          <Tooltip label={request?.origin}>
+            <Button
+              styles={{
+                root: {
+                  background: '#5C5CEB1A',
+                  maxWidth: '-webkit-fill-available',
+                },
+              }}
+              variant="light"
+              color="gray"
+              compact
+              component="a"
+              href={request?.chat?.link}
+              target="_blank"
+              leftIcon={<SourceIcon width={14} sourceName={request?.origin} />}>
+              <OverflownText
+                size={14}
+                weight={400}
+                lineClamp={1}
+                color="black">{`${request?.origin == 'zendesk' ? '#' : ''}${request?.chat?.originId}`}</OverflownText>
+            </Button>
+          </Tooltip>
+        )}
+      </Group>
     </Box>
   );
 };

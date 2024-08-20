@@ -159,12 +159,14 @@ export function NewRequestForm({
           }
         />
 
-        <SuggestedSearch
-          newRequestForm={newRequestForm}
-          matchesIdeas={matchesIdeas}
-          loading={loading}
-          setLoading={setLoading}
-        />
+        {_appStorage.tab === 'create-new-request' && (
+          <SuggestedSearch
+            newRequestForm={newRequestForm}
+            matchesIdeas={matchesIdeas}
+            loading={loading}
+            setLoading={setLoading}
+          />
+        )}
 
         <TextInput
           mx={mx}

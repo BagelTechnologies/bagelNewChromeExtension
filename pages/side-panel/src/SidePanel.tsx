@@ -78,9 +78,7 @@ const SidePanel = () => {
         <Box hidden={!(auth0.isAuthenticated && app.tab === 'create-new-request')}>
           <CreateNewModal />
         </Box>
-        <Box hidden={!(auth0.isAuthenticated && app.tab === 'my-requests')}>
-          <MyRequests />
-        </Box>
+        {auth0.isAuthenticated && app.tab === 'my-requests' && <MyRequests />}
       </main>
     </div>
   );
