@@ -1,9 +1,8 @@
 import React, { useContext, createContext, useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-// import { listFields } from './Api';
+import { listFields } from './Api';
 // eslint-disable-next-line import/named
 import { UseListStateHandlers, useListState } from '@mantine/hooks';
-import { listFields } from '@extension/shared';
 
 interface AppState {
   businessCategoryMapping: any[] | null;
