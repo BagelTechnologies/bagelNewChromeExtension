@@ -5,7 +5,7 @@ import { useDebouncedValue, useListState } from '@mantine/hooks';
 import { EmptyState } from './EmptyState';
 import { MentionProvider } from './Comment/MentionTextarea/MentionContext';
 import { RequestCard } from './RequestCard';
-import { getMyRequests } from '@src/Api';
+import { getMyRequests } from '@extension/shared';
 import { IconSearch, IconX } from '@tabler/icons-react';
 
 export function MyRequests() {
