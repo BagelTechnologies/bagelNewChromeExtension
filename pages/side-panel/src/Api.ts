@@ -21,19 +21,26 @@ export const getSyncedIdeas = async (ticketId: string, auth0: any): Promise<any>
   }
 };
 
-export const getMyRequests = async (auth0: any): Promise<any> => {
+export const getMyRequests = async (auth0: any, page: number, searchTerm: string): Promise<any> => {
   try {
     const config = await getAuthHeaders(auth0);
     //@ts-ignore
     const url = import.meta.env.VITE_APP_API_DOMAIN + '/product_apps/ideas/my-requests';
-    const response = await axios.post(url, {}, config);
+    const response = await axios.post(
+      url,
+      {
+        page, // Include the page number
+        limit: 10, // You can adjust the limit as needed
+        searchTerm, // Include the search term
+      },
+      config,
+    );
     return response.data.requests;
   } catch (e) {
     console.error(e);
     throw e;
   }
 };
-
 export const listFields = async (auth0: any): Promise<any> => {
   try {
     const config = await getAuthHeaders(auth0);

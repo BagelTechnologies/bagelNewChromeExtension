@@ -1,4 +1,4 @@
-import { Box, ActionIcon, Card } from '@mantine/core';
+import { Box, ActionIcon } from '@mantine/core';
 import { IconSend } from '@tabler/icons-react';
 import { useState } from 'react';
 import { addCommentToRequest, deleteCommentFromRequest, searchUsers, updateRequestComment } from '../../Api';
@@ -104,7 +104,7 @@ export function Comments({
   };
 
   return (
-    <Card p={0} h="100%">
+    <>
       <Box
         h="100%"
         sx={{
@@ -126,12 +126,13 @@ export function Comments({
 
       <Box
         sx={{
-          background: '#F5F6FE',
           padding: 10,
           position: 'sticky',
           bottom: '0px',
           right: '0px',
           left: '0px',
+          backdropFilter: 'blur(3px)',
+          borderRadius: '0 0 4px 4px',
         }}>
         <MentionTextarea<MentionSuggestion>
           placeholder="Your comment"
@@ -160,6 +161,6 @@ export function Comments({
           }
         />
       </Box>
-    </Card>
+    </>
   );
 }

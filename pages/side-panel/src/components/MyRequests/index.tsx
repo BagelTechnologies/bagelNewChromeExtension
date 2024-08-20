@@ -1,61 +1,108 @@
-import { useEffect, useState } from 'react';
-import { useListState } from '@mantine/hooks';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { RequestCard } from './RequestCard';
-import { getMyRequests } from '@src/Api';
-import { Box, Divider, Skeleton } from '@mantine/core';
+import { Box, Divider, Skeleton, TextInput, Loader, ActionIcon } from '@mantine/core';
+import { useDebouncedValue, useListState } from '@mantine/hooks';
 import { EmptyState } from './EmptyState';
 import { MentionProvider } from './Comment/MentionTextarea/MentionContext';
-// import { useStorageSuspense } from '@extension/shared';
-// import { appStorage } from '@extension/storage';
+import { RequestCard } from './RequestCard';
+import { getMyRequests } from '@src/Api';
+import { IconSearch, IconX } from '@tabler/icons-react';
 
 export function MyRequests() {
   const auth0 = useAuth0();
-  // const _appStorage = useStorageSuspense(appStorage);
+  const [requests, requestsHandlers] = useListState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 300); // Adjusted debounce time to 300ms
 
-  const [requests, requestsHandlers] = useListState<any[]>([]); // Assuming RequestType is the type of each request
-  const [loading, setLoading] = useState<boolean>(false); // Assuming RequestType is the type of each request
-  // const selectedRequest = _appStorage.selectedRequest;
-
-  const requestsWidthNotifications = requests.filter((request: any) => request?.unreadNotificationsCount > 0);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const fetchRequests = async () => {
       setLoading(true);
       try {
-        const response = await getMyRequests(auth0); // Assuming getMyRequests is your API call function
+        const response = await getMyRequests(auth0, page, debouncedSearchTerm);
         setLoading(false);
-        requestsHandlers.setState(response);
+        if (page === 1) {
+          requestsHandlers.setState(response);
+        } else {
+          requestsHandlers.append(...response);
+        }
+        if (response.length === 0) {
+          setHasMore(false);
+        }
       } catch (error) {
         setLoading(false);
         console.error('Error fetching requests:', error);
       }
     };
 
-    fetchRequests();
-  }, []);
+    if (hasMore || page === 1) {
+      fetchRequests();
+    }
+  }, [page, debouncedSearchTerm]);
 
-  // Render only the selected request if selectedRequest is not null
-  // if (selectedRequest) {
-  //   const selected: any = requests.find((request: any) => request._id === selectedRequest);
-  //   return selected ? (
-  //     <MentionProvider>
-  //       <RequestCard key={selected._id} request={selected} />
-  //     </MentionProvider>
-  //   ) : null; // Return null if selected request is not found
-  // }
+  const lastRequestElementRef = (node: HTMLDivElement) => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prevPage => prevPage + 1);
+      }
+    });
+
+    if (node) observer.current.observe(node);
+  };
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setPage(1);
+    setHasMore(true);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    setPage(1);
+    // setHasMore(true);
+  };
+
+  const requestsWithNotifications = requests.filter((request: any) => request?.unreadNotificationsCount > 0);
 
   return (
     <MentionProvider>
+      <TextInput
+        mb="sm"
+        placeholder="Search requests..."
+        icon={<IconSearch size={14} />}
+        value={searchTerm}
+        onChange={handleSearchChange}
+        rightSection={
+          searchTerm && loading ? (
+            <Loader size={16} />
+          ) : (
+            <ActionIcon hidden={searchTerm === ''} onClick={handleClearSearch} p={2}>
+              <IconX size={14} />
+            </ActionIcon>
+          )
+        }
+        mx="1rem"
+      />
       <Box id="RequestCardsContainer">
-        {requestsWidthNotifications.map((request: any) => (
-          <RequestCard key={request._id} request={request} />
+        {requestsWithNotifications.map((request: any) => (
+          <RequestCard key={request._id} request={request} searchTerm={searchTerm} />
         ))}
-        {requestsWidthNotifications.length > 0 && <Divider mx="1rem" my="sm" color="#D8D8DB" />}
+        {requestsWithNotifications.length > 0 && <Divider mx="1rem" my="sm" color="#D8D8DB" />}
         {requests.length > 0 ? (
           requests
             .filter((request: any) => request?.unreadNotificationsCount === 0)
-            .map((request: any) => <RequestCard key={request._id} request={request} />)
+            .map((request: any, index: number) => (
+              <div ref={index === requests.length - 3 ? lastRequestElementRef : null} key={request._id}>
+                <RequestCard request={request} searchTerm={searchTerm} />
+              </div>
+            ))
         ) : loading ? (
           Array.from({ length: 6 }).map((_, index) => (
             <Skeleton mx="1rem" mb="xs" width="calc(100% - 2rem)" height={200} key={index} />
@@ -63,6 +110,7 @@ export function MyRequests() {
         ) : (
           <EmptyState />
         )}
+        {loading && hasMore && <Loader size={22} mx="auto" my="sm" />}
       </Box>
     </MentionProvider>
   );
