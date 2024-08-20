@@ -176,3 +176,16 @@ export const updateRequestComment = async (
     throw e;
   }
 };
+
+export const markNotificationsRead = async (auth0: any, itemId: string): Promise<any> => {
+  try {
+    const config = await getAuthHeaders(auth0);
+    //@ts-ignore
+    const url = `${import.meta.env.VITE_APP_API_DOMAIN}/product_apps/ideas/requests/${itemId}/markNotificationsRead`;
+    const response = await axios.post(url, {}, config);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};

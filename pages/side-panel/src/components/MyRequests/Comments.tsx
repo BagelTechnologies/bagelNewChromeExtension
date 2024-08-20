@@ -1,7 +1,13 @@
 import { Box, ActionIcon } from '@mantine/core';
 import { IconSend } from '@tabler/icons-react';
-import { useState } from 'react';
-import { addCommentToRequest, deleteCommentFromRequest, searchUsers, updateRequestComment } from '../../Api';
+import { useEffect, useState } from 'react';
+import {
+  addCommentToRequest,
+  deleteCommentFromRequest,
+  markNotificationsRead,
+  searchUsers,
+  updateRequestComment,
+} from '../../Api';
 import Comment from './Comment';
 // eslint-disable-next-line import/named
 import { UseListStateHandlers } from '@mantine/hooks';
@@ -13,11 +19,13 @@ import { useAuth0 } from '@auth0/auth0-react';
 export function Comments({
   idea,
   request,
+  requestsHandlers,
   comments,
   commentsHandlers,
 }: {
   idea: any;
   request: any;
+  requestsHandlers: UseListStateHandlers<any[]>;
   origin: string;
   comments: any[];
   commentsHandlers: UseListStateHandlers<any>;
@@ -102,6 +110,23 @@ export function Comments({
       setSuggestionsLoading(false);
     }
   };
+
+  useEffect(() => {
+    async function handleNotificationRead() {
+      if (request?._id && request.unreadNotificationsCount > 0) {
+        await markNotificationsRead(auth0, request._id).then(res => {
+          console.log({ res });
+
+          requestsHandlers.applyWhere(
+            (item: any) => item._id == request._id,
+            item => ({ ...item, unreadNotificationsCount: 0 }),
+          );
+        });
+      }
+    }
+
+    handleNotificationRead();
+  }, [request?._id]);
 
   return (
     <>

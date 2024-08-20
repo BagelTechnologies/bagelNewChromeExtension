@@ -12,7 +12,8 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import { useListState } from '@mantine/hooks';
+// eslint-disable-next-line import/named
+import { useListState, UseListStateHandlers } from '@mantine/hooks';
 import { appStorage } from '@extension/storage';
 import { getInitials, useStorageSuspense } from '@extension/shared';
 import moment from 'moment';
@@ -54,7 +55,15 @@ const useStyles = createStyles(theme => ({
   },
 }));
 
-export function RequestCard({ request, searchTerm }: { request: any; searchTerm: string }) {
+export function RequestCard({
+  request,
+  requestsHandlers,
+  searchTerm,
+}: {
+  request: any;
+  requestsHandlers: UseListStateHandlers<any[]>;
+  searchTerm: string;
+}) {
   const { classes } = useStyles();
   const [comments, commentsHandlers] = useListState<any[]>(request.comments || []);
   const _appStorage = useStorageSuspense(appStorage);
@@ -102,6 +111,7 @@ export function RequestCard({ request, searchTerm }: { request: any; searchTerm:
                   idea={{}}
                   origin={'chrome extension'}
                   request={request}
+                  requestsHandlers={requestsHandlers}
                   comments={comments}
                   commentsHandlers={commentsHandlers}
                 />

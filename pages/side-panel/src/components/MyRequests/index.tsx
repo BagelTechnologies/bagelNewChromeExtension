@@ -70,6 +70,16 @@ export function MyRequests() {
   };
 
   const requestsWithNotifications = requests.filter((request: any) => request?.unreadNotificationsCount > 0);
+  useEffect(() => {
+    if (requestsWithNotifications.length > 0) {
+      chrome.action.setBadgeBackgroundColor({ color: '#5C5CEB' });
+      chrome.action.setBadgeText({
+        text: `${requestsWithNotifications.length > 10 ? '10+' : requestsWithNotifications.length}`,
+      });
+    } else {
+      chrome.action.setBadgeText({ text: '' });
+    }
+  }, [requests]);
 
   return (
     <MentionProvider>
@@ -92,7 +102,12 @@ export function MyRequests() {
       />
       <Box id="RequestCardsContainer">
         {requestsWithNotifications.map((request: any) => (
-          <RequestCard key={request._id} request={request} searchTerm={debouncedSearchTerm} />
+          <RequestCard
+            key={request._id}
+            request={request}
+            requestsHandlers={requestsHandlers}
+            searchTerm={debouncedSearchTerm}
+          />
         ))}
         {requestsWithNotifications.length > 0 && <Divider mx="1rem" my="sm" color="#D8D8DB" />}
         {requests.length > 0 ? (
@@ -100,7 +115,7 @@ export function MyRequests() {
             .filter((request: any) => request?.unreadNotificationsCount === 0)
             .map((request: any, index: number) => (
               <div ref={index === requests.length - 3 ? lastRequestElementRef : null} key={request._id}>
-                <RequestCard request={request} searchTerm={debouncedSearchTerm} />
+                <RequestCard request={request} requestsHandlers={requestsHandlers} searchTerm={debouncedSearchTerm} />
               </div>
             ))
         ) : loading ? (
