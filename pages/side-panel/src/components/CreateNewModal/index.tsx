@@ -2,10 +2,11 @@ import { useForm } from '@mantine/form';
 import { NewRequestForm } from './NewRequestForm';
 import { useEffect, useState } from 'react';
 import { useHover } from '@mantine/hooks';
+import { getSuggestions } from '@src/Api';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAppContext } from '@src/AppContext';
 import { appStorage } from '@extension/storage';
-import { getSuggestions, useStorageSuspense } from '@extension/shared';
+import { useStorageSuspense } from '@extension/shared';
 
 type NewRequestFormKeys =
   | 'evidenceTitle'

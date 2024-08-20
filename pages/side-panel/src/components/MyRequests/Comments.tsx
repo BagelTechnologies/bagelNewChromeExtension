@@ -7,7 +7,7 @@ import {
   markNotificationsRead,
   searchUsers,
   updateRequestComment,
-} from '@extension/shared';
+} from '../../Api';
 import Comment from './Comment';
 // eslint-disable-next-line import/named
 import { UseListStateHandlers } from '@mantine/hooks';

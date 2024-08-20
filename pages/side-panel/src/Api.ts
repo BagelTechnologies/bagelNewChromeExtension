@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { useAuth0 } from "@auth0/auth0-react";
 
 const getAuthHeaders = async (auth0: any) => {
   const token = await auth0.getAccessTokenSilently();

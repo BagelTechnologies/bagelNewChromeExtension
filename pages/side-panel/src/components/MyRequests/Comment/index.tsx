@@ -5,8 +5,9 @@ import moment from 'moment';
 import { useState } from 'react';
 import MentionTextarea, { MentionSuggestion } from './MentionTextarea';
 import { useMentions } from './MentionTextarea/MentionContext';
+import { searchUsers } from '@src/Api';
 import { SourceIcon } from '@src/utils/SourceIcon';
-import { getInitials, searchUsers } from '@extension/shared';
+import { getInitials } from '@extension/shared';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getBagelId } from '@src/utils/utils';
 

@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 // import { searchItems } from "../../Api";
 import { NewRequestFormType } from '.';
 import { useDebouncedValue } from '@mantine/hooks';
-import { searchOrgs } from '@extension/shared';
+import { searchOrgs } from '@src/Api';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export function RelatedObjectInput({

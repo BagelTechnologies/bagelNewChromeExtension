@@ -16,13 +16,14 @@ import {
 import { UseFormReturnType } from '@mantine/form';
 import { NewRequestFormType } from '.';
 import { RelatedObjectInput } from './RelatedObjectInput';
+import { createNewRequest } from '../../Api';
 import { forwardRef, useState, ComponentPropsWithoutRef, Dispatch, SetStateAction } from 'react';
 import { closeAllModals } from '@mantine/modals';
 import { useAppContext } from '@src/AppContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SuggestedSearch } from './SuggestedSearch';
 import { IconArrowNarrowRight, IconX } from '@tabler/icons-react';
-import { createNewRequest, useStorageSuspense } from '@extension/shared';
+import { useStorageSuspense } from '@extension/shared';
 import { appStorage } from '@extension/storage';
 
 interface ItemProps extends ComponentPropsWithoutRef<'div'> {
