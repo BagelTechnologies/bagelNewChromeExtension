@@ -3,11 +3,12 @@ import { useStorageSuspense, withErrorBoundary, withSuspense } from '@extension/
 import { appStorage } from '@extension/storage';
 // import { ComponentPropsWithoutRef } from 'react';
 import { Anchor, Box, Button, Card, Center, Group, SegmentedControl, Text } from '@mantine/core';
-import { useAuth0 } from '@auth0/auth0-react';
+// eslint-disable-next-line import/named
+import { Auth0ContextInterface, useAuth0, User } from '@auth0/auth0-react';
 import { CreateNewModal } from './components/CreateNewModal';
 import { IconLogin } from '@tabler/icons-react';
 import { MyRequests } from './components/MyRequests';
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
 
 const SidePanel = () => {
   const app = useStorageSuspense(appStorage);
@@ -17,12 +18,16 @@ const SidePanel = () => {
   //   auth0.loginWithPopup()
   //   return <div>Redirecting to login...</div>;
   // }
+  const saveAuthObject = async (auth0: Auth0ContextInterface<User>) => {
+    const token = await auth0.getAccessTokenSilently();
+    await appStorage.setAuthObject({ auth0, token });
+  };
 
-  // useEffect(() => {
-  //   if (!auth0.isLoading && !auth0.isAuthenticated) {
-  //     auth0.loginWithPopup()
-  //   }
-  // }, [auth0])
+  useEffect(() => {
+    if (auth0.isAuthenticated) {
+      saveAuthObject(auth0);
+    }
+  }, [auth0]);
 
   return (
     <div className={`App`}>

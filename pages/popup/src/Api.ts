@@ -16,7 +16,7 @@ export const getUnreadNotificationsCount = async (auth0: any): Promise<any> => {
     //@ts-ignore
     const url = `${import.meta.env.VITE_APP_API_DOMAIN}/product_apps/ideas/unread-notifications-count`;
     const response = await axios.post(url, {}, config);
-    return response.data;
+    return response.data.unreadCount;
   } catch (e) {
     console.error(e);
     throw e;

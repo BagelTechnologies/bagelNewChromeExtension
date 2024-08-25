@@ -15,6 +15,7 @@ export function MyRequests() {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 300); // Adjusted debounce time to 300ms
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -97,6 +98,8 @@ export function MyRequests() {
             request={request}
             requestsHandlers={requestsHandlers}
             searchTerm={debouncedSearchTerm}
+            selectedRequest={selectedRequest}
+            setSelectedRequest={setSelectedRequest}
           />
         ))}
         {requestsWithNotifications.length > 0 && <Divider mx="1rem" my="sm" color="#D8D8DB" />}
@@ -105,7 +108,13 @@ export function MyRequests() {
             .filter((request: any) => request?.unreadNotificationsCount === 0)
             .map((request: any, index: number) => (
               <div ref={index === requests.length - 3 ? lastRequestElementRef : null} key={request._id}>
-                <RequestCard request={request} requestsHandlers={requestsHandlers} searchTerm={debouncedSearchTerm} />
+                <RequestCard
+                  request={request}
+                  requestsHandlers={requestsHandlers}
+                  searchTerm={debouncedSearchTerm}
+                  selectedRequest={selectedRequest}
+                  setSelectedRequest={setSelectedRequest}
+                />
               </div>
             ))
         ) : loading ? (

@@ -7,11 +7,15 @@ if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     # Parse the version from package.json
     current_version=$(grep -o "\"version\": \"[^\"]*" "$0" | cut -d"\"" -f4)
 
-    # Update the version
-    perl -i -pe"s/$current_version/'$1'/" "$0"
+    # Compare the versions
+    if [[ "$(echo -e "$current_version\n$1" | sort -V | head -n1)" == "$1" && "$current_version" != "$1" ]]; then
+      # Update the version
+      perl -i -pe"s/$current_version/'$1'/" "$0"
+      echo "Updated $0 from $current_version to '$1'";
+    else
+      echo "Cannot update $0 to a higher or same version ('$1'). Current version is $current_version";
+    fi
   '  {} \;
-
-  echo "Updated versions to $1";
 else
   echo "Version format <$1> isn't correct, proper format is <0.0.0>";
 fi

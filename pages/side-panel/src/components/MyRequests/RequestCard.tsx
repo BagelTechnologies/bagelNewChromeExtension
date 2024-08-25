@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, SetStateAction, Dispatch } from 'react';
 import {
   Avatar,
   Box,
@@ -14,8 +14,8 @@ import {
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 // eslint-disable-next-line import/named
 import { useListState, UseListStateHandlers } from '@mantine/hooks';
-import { appStorage } from '@extension/storage';
-import { getInitials, useStorageSuspense } from '@extension/shared';
+// import { appStorage } from '@extension/storage';
+import { getInitials } from '@extension/shared';
 import moment from 'moment';
 import { Comments } from './Comments';
 import { BusinessNameNotification } from '../icons/x-symbol-svgrepo-com';
@@ -59,15 +59,18 @@ export function RequestCard({
   request,
   requestsHandlers,
   searchTerm,
+  selectedRequest,
+  setSelectedRequest,
 }: {
   request: any;
   requestsHandlers: UseListStateHandlers<any[]>;
   searchTerm: string;
+  selectedRequest: string | null;
+  setSelectedRequest: Dispatch<SetStateAction<string | null>>;
 }) {
   const { classes } = useStyles();
   const [comments, commentsHandlers] = useListState<any[]>(request.comments || []);
-  const _appStorage = useStorageSuspense(appStorage);
-  const open = request._id.toString() === _appStorage.selectedRequest;
+  const open = request._id.toString() === selectedRequest;
 
   useEffect(() => {
     if (open) {
@@ -83,7 +86,7 @@ export function RequestCard({
   return (
     <Box
       id={`request-card-${request._id}`}
-      onClick={async () => await appStorage.selectRequest(request._id)}
+      onClick={() => setSelectedRequest(request._id)}
       mb={'xs'}
       // withBorder
       mx="1rem"
@@ -101,7 +104,12 @@ export function RequestCard({
             height: 'calc(100vh - 105.7px - 1rem)',
           }}>
           <Panel minSize={20} maxSize={80} defaultSize={50}>
-            <TopCard request={request} searchTerm={searchTerm} />
+            <TopCard
+              request={request}
+              searchTerm={searchTerm}
+              selectedRequest={selectedRequest}
+              setSelectedRequest={setSelectedRequest}
+            />
           </Panel>
           {open && (
             <>
@@ -120,15 +128,28 @@ export function RequestCard({
           )}
         </PanelGroup>
       ) : (
-        <TopCard request={request} searchTerm={searchTerm} />
+        <TopCard
+          request={request}
+          searchTerm={searchTerm}
+          selectedRequest={selectedRequest}
+          setSelectedRequest={setSelectedRequest}
+        />
       )}
     </Box>
   );
 }
 
-const TopCard = ({ request }: { request: any; searchTerm: string }) => {
-  const _appStorage = useStorageSuspense(appStorage);
-  const open = request._id.toString() === _appStorage.selectedRequest;
+const TopCard = ({
+  request,
+  selectedRequest,
+  setSelectedRequest,
+}: {
+  request: any;
+  searchTerm: string;
+  selectedRequest: string | null;
+  setSelectedRequest: Dispatch<SetStateAction<string | null>>;
+}) => {
+  const open = request._id.toString() === selectedRequest;
 
   return (
     <Box
@@ -151,9 +172,16 @@ const TopCard = ({ request }: { request: any; searchTerm: string }) => {
         <Group position="apart">
           <Group p={9} spacing={6} noWrap>
             {request?.unreadNotificationsCount > 0 ? (
-              <Box w={20}>
-                <BusinessNameNotification />
-              </Box>
+              <Tooltip
+                label={
+                  request?.unreadNotificationsCount > 1
+                    ? `${request?.unreadNotificationsCount} unread comments`
+                    : `unread comment`
+                }>
+                <Box w={20}>
+                  <BusinessNameNotification />
+                </Box>
+              </Tooltip>
             ) : (
               <img src={chrome.runtime.getURL('side-panel/notification.svg')} alt="notification" />
             )}
@@ -191,16 +219,20 @@ const TopCard = ({ request }: { request: any; searchTerm: string }) => {
                 color: '#5C5CEB',
                 zIndex: 4,
               }}
-              onClick={async event => {
+              onClick={event => {
                 event.stopPropagation(); // Prevent click event from propagating to the Card
-                await appStorage.resetSelection();
+                setSelectedRequest(null);
               }}>
               Close
             </UnstyledButton>
           ) : (
-            <Text size={12} p={9} color="dimmed">
-              {moment(request.createdAt).fromNow()}
-            </Text>
+            <Box p={9}>
+              <Tooltip label={moment(request.createdAt)?.format('MMMM Do YYYY, h:mm:ss a')}>
+                <Text size={12} color="dimmed">
+                  {moment(request.createdAt).fromNow()}
+                </Text>
+              </Tooltip>
+            </Box>
           )}
         </Group>
       </Box>
@@ -273,7 +305,7 @@ const TopCard = ({ request }: { request: any; searchTerm: string }) => {
                 {request?.owner?.name && getInitials(request?.owner?.name)}
               </Avatar>
             )}
-            <Text>{request?.owner?.name}</Text>
+            <Text>{request?.owner?.name || 'Unassigned'}</Text>
           </Group>
         </Tooltip>
 

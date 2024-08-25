@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Box, LoadingOverlay, Text, Card, Group, ActionIcon, Center } from '@mantine/core';
+import { Box, LoadingOverlay, Text, Card, Group, ActionIcon, Center, UnstyledButton, Tooltip } from '@mantine/core';
 
 // eslint-disable-next-line import/named
 import { UseFormReturnType } from '@mantine/form';
 import { NewRequestFormType } from '.';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight, IconCircleArrowRight } from '@tabler/icons-react';
 // import { searchIdeas } from "../../Api";
 import { useEffect, useState } from 'react';
 // import { useDebouncedValue } from '@mantine/hooks';
@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { IdeasCard } from '../IdeasCard';
 // eslint-disable-next-line import/named
 import { Carousel, Embla } from '@mantine/carousel';
+import { OverflownText } from '../OverflownText';
 
 export function SuggestedSearch({
   matchesIdeas,
@@ -138,6 +139,64 @@ export function SuggestedSearch({
         onSlideChange={index => setSlidesInView(index + 1)}
         // includeGapInSize
         withControls={false}>
+        <Carousel.Slide key="list" maw="calc(100% - (2rem - 4px))">
+          <LoadingOverlay visible={loading.suggestions} overlayBlur={2} />
+          <Box
+            mx={2}
+            sx={{
+              borderRadius: '0px 0px 4px 4px',
+            }}>
+            {matchesIdeas.map((idea, index) => (
+              <UnstyledButton
+                sx={{
+                  background: '#fff',
+                  border: '1px solid #5C5CEB1A',
+                  borderRadius: 4,
+                }}
+                mb={4}
+                p={4}
+                w={'100%'}
+                onClick={() => embla?.scrollTo(index + 1)}
+                key={index}>
+                <Group spacing={8} noWrap position="apart">
+                  <OverflownText px={4} maw={'80vw'} size={14} weight={600} lineClamp={1}>
+                    <Text span size={12} weight={400} color="dimmed">
+                      #{index + 1}
+                    </Text>{' '}
+                    {idea.title}
+                  </OverflownText>
+                  <Group spacing={8} noWrap>
+                    <Tooltip label={`Priority: ${idea.priority}`}>
+                      <img
+                        style={{ height: 16 }}
+                        src={chrome.runtime.getURL('side-panel/nice-to-have.svg')}
+                        alt="nice to have"
+                      />
+                    </Tooltip>
+                    <Tooltip label="Status">
+                      <Box>
+                        <OverflownText
+                          px={4}
+                          maw={'80vw'}
+                          size={12}
+                          weight={600}
+                          lineClamp={1}
+                          color="#5C5CEB"
+                          sx={{
+                            background: '#5C5CEB1A',
+                            borderRadius: 4,
+                          }}>
+                          {idea?.status || 'Unassigned'}
+                        </OverflownText>
+                      </Box>
+                    </Tooltip>
+                    <IconCircleArrowRight size={14} color="#868e96" />
+                  </Group>
+                </Group>
+              </UnstyledButton>
+            ))}
+          </Box>
+        </Carousel.Slide>
         {matchesIdeas.map((idea, index) => (
           <Carousel.Slide key={index} maw="calc(100% - (2rem - 4px))">
             <LoadingOverlay visible={loading.suggestions} overlayBlur={2} />

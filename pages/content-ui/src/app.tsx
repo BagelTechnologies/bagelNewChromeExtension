@@ -27,11 +27,11 @@ export default function App() {
     };
 
     document.addEventListener('mouseup', handleSelection);
-    document.addEventListener('keyup', handleSelection);
+    // document.addEventListener('keyup', handleSelection);
 
     return () => {
       document.removeEventListener('mouseup', handleSelection);
-      document.removeEventListener('keyup', handleSelection);
+      // document.removeEventListener('keyup', handleSelection);
     };
   }, []);
 
@@ -64,7 +64,7 @@ export default function App() {
           style={{
             left: `${tooltip.x}px`,
             top: `${tooltip.y}px`,
-            zIndex: 5,
+            zIndex: 15,
           }}>
           {/* <div className="mb-2">{tooltip.text}</div> */}
           {/* <div className="mb-2">{_appStorage.tab}</div>

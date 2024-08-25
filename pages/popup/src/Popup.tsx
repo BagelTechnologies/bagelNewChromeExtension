@@ -1,17 +1,21 @@
 import '@src/Popup.css';
-import { getInitials, getUnreadNotificationsCount, withErrorBoundary, withSuspense } from '@extension/shared';
+import { getInitials, withErrorBoundary, withSuspense } from '@extension/shared';
 // import { exampleThemeStorage } from '@extension/storage';
 // import { ComponentPropsWithoutRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Box, Group, Image, Avatar, Center, Button } from '@mantine/core';
+import { Box, Group, Image, Avatar, Button, ActionIcon, Grid } from '@mantine/core';
 import { appStorage } from '@extension/storage';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { IconSettings } from '@tabler/icons-react';
+
+// import { getUnreadNotificationsCount } from './Api';
 
 const Popup = () => {
   // const theme = useStorageSuspense(exampleThemeStorage);
   // const isLight = theme === 'light';
   // const logo = isLight ? 'popup/logo_vertical.svg' : 'popup/logo_vertical_dark.svg';
   const auth0 = useAuth0();
+  const [badgeText, setBadgeText] = useState('');
 
   // if (!auth0.isLoading && !auth0.isAuthenticated) {
   //   auth0.loginWithRedirect();
@@ -26,27 +30,22 @@ const Popup = () => {
   //     files: ['content-runtime/index.iife.js'],
   //   });
   // };
+  // const fetchUnreadNotifications = async () => {
+  //   try {
+  //     const count = await getUnreadNotificationsCount(auth0);
 
-  useEffect(() => {
-    const fetchUnreadNotifications = async () => {
-      try {
-        const count = await getUnreadNotificationsCount(auth0);
-
-        if (count > 0) {
-          chrome.action.setBadgeBackgroundColor({ color: '#5C5CEB' });
-          chrome.action.setBadgeText({
-            text: `${count > 10 ? '10+' : count}`,
-          });
-        } else {
-          chrome.action.setBadgeText({ text: '' });
-        }
-      } catch (e) {
-        console.error('Failed to fetch unread notifications count', e);
-      }
-    };
-
-    fetchUnreadNotifications();
-  }, []);
+  //     if (count > 0) {
+  //       chrome.action.setBadgeBackgroundColor({ color: '#5C5CEB' });
+  //       chrome.action.setBadgeText({
+  //         text: `${count > 10 ? '10+' : count}`,
+  //       });
+  //     } else {
+  //       chrome.action.setBadgeText({ text: '' });
+  //     }
+  //   } catch (e) {
+  //     console.error('Failed to fetch unread notifications count', e);
+  //   }
+  // };
 
   const openSidePanel = async () => {
     const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
@@ -60,7 +59,7 @@ const Popup = () => {
 
         console.log({ token, auth0 });
         // Update storage with auth data
-        await appStorage.setAuthObject(auth0);
+        await appStorage.setAuthObject({ auth0, token });
       }
     } catch (error) {
       console.error('Error fetching auth data:', error);
@@ -70,32 +69,13 @@ const Popup = () => {
   useEffect(() => {
     console.log({ auth0 });
     fetchAuthData();
+    chrome.action.getBadgeText({}, text => {
+      console.log({ text });
+      setBadgeText(text);
+    });
   }, []);
-  //@ts-ignore
-  console.log({ env: import.meta.env });
 
   return (
-    // <div className={`App ${isLight ? 'bg-slate-50' : 'bg-gray-800'}`}>
-    //    <header className={`App-header ${isLight ? 'text-gray-900' : 'text-gray-100'}`}>
-    //     <img src={chrome.runtime.getURL(logo)} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>pages/popup/src/Popup.tsx</code>
-    //     </p>
-    //     <pre>
-    //       {JSON.stringify(auth0) }
-    //     </pre>
-    //     <button
-    //       className={
-    //         'font-bold mt-4 py-1 px-4 rounded shadow hover:scale-105 ' +
-    //         (isLight ? 'bg-blue-200 text-black' : 'bg-gray-700 text-white')
-    //       }
-    //       onClick={fetchAuthData}>
-    //       fetchAuthData
-    //     </button>
-    //     <ToggleButton>Toggle theme</ToggleButton>
-    //   </header>
-    //   </div>
-
     <Box p="md" miw={260}>
       <Group noWrap position="apart">
         <Image maw={100} src={chrome.runtime.getURL('side-panel/logo_main.svg')} />
@@ -107,29 +87,59 @@ const Popup = () => {
           </Avatar>
         )}
       </Group>
-      <Box m="sm">
-        <Center>
-          {!auth0.isAuthenticated && (
-            <Button mt="sm" miw={180} radius="xl" onClick={async () => await auth0.loginWithPopup()}>
-              Login
+      <Box>
+        {!auth0.isAuthenticated && (
+          <Button fullWidth mt="md" miw={180} radius="xl" onClick={async () => await auth0.loginWithPopup()}>
+            Login
+          </Button>
+        )}
+        <Grid mt="md" gutter={0} p={0} m={0}>
+          <Grid.Col span="content">
+            <ActionIcon
+              mr="xs"
+              size={36}
+              onClick={() => chrome.tabs.create({ url: `chrome-extension://${chrome.runtime.id}/options/index.html` })}>
+              <IconSettings color="#000" />{' '}
+            </ActionIcon>
+          </Grid.Col>
+          <Grid.Col span="auto">
+            <Button
+              fullWidth
+              variant="outline"
+              radius="xl"
+              onClick={openSidePanel}
+              styles={{
+                root: {
+                  color: '#5C5CEB',
+                  borderColor: '#5C5CEB',
+                },
+              }}
+              rightIcon={
+                badgeText !== '' && (
+                  <Box
+                    px={5}
+                    py={2}
+                    sx={{ textAlign: 'center', borderRadius: 4, background: '#5C5CEB', fontSize: 10, color: '#fff' }}>
+                    {badgeText}
+                  </Box>
+                )
+              }>
+              Open Side Panel
             </Button>
-          )}
-        </Center>
-        <Group grow>
-          <Button
+          </Grid.Col>
+        </Grid>
+        {/* <Button
             mt="sm"
             radius="xl"
-            variant="outline"
+            variant="subtle"
+            fullWidth
             onClick={() => chrome.tabs.create({ url: '/options/index.html' })}>
-            Options
-          </Button>
-          <Button mt="sm" radius="xl" onClick={openSidePanel}>
-            Side Panel
-          </Button>
-          {/* <Button mt="sm" radius="xl" onClick={injectContentScript}>
+            
+          </Button> */}
+
+        {/* <Button mt="sm" radius="xl" onClick={injectContentScript}>
           injectContentScript
           </Button> */}
-        </Group>
       </Box>
     </Box>
   );
