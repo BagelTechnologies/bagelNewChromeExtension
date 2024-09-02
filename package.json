@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-boilerplate-react-vite",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "chrome extension boilerplate",
   "license": "MIT",
   "repository": {
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
-    "@types/chrome": "^0.0.268",
+    "@types/chrome": "^0.0.468",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

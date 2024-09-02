@@ -9,10 +9,12 @@ import { CreateNewModal } from './components/CreateNewModal';
 import { IconLogin } from '@tabler/icons-react';
 import { MyRequests } from './components/MyRequests';
 import { useEffect } from 'react';
+import { UserTypes } from './types/types';
 
 const SidePanel = () => {
   const app = useStorageSuspense(appStorage);
   const auth0 = useAuth0();
+  console.log({ user: auth0.user });
 
   // if (!auth0.isLoading && !auth0.isAuthenticated) {
   //   auth0.loginWithPopup()
@@ -39,6 +41,7 @@ const SidePanel = () => {
               fontSize: 12,
               color: '#5C5CEB',
             }}
+            hidden={auth0?.user?.['bagel/role'] == UserTypes.CASUAL}
             //@ts-ignore
             href={import.meta.env.VITE_MAIN_APP_URL}
             target="_blank">

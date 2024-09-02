@@ -2,7 +2,7 @@ import { useForm } from '@mantine/form';
 import { NewRequestForm } from './NewRequestForm';
 import { useEffect, useState } from 'react';
 import { useHover } from '@mantine/hooks';
-import { getSuggestions } from '@src/Api';
+import { getComponentSuggestions, getSuggestions } from '@src/Api';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAppContext } from '@src/AppContext';
 import { appStorage } from '@extension/storage';
@@ -46,7 +46,7 @@ export function CreateNewModal() {
   // const token = await auth0.getAccessTokenSilently();
   // const apiClient = new APIClient(token);
 
-  const { appState } = useAppContext();
+  const { appState, updateAppState } = useAppContext();
   const _appStorage = useStorageSuspense(appStorage);
 
   const { hovered: suggestedIdeasHovered } = useHover();
@@ -120,6 +120,21 @@ export function CreateNewModal() {
       .finally(() => {
         setLoading((prev: any) => ({ ...prev, suggestions: false }));
       });
+
+    getComponentSuggestions({
+      title: newRequestForm.values.evidenceTitle,
+      text: newRequestForm.values.evidenceDescription,
+      auth0,
+    })
+      .then(response => {
+        console.log({ response });
+        if (response.predictions && response.predictions.length > 0) {
+          updateAppState({ mlComponentSuggestions: response.predictions });
+        }
+      })
+      .catch(e => {
+        console.error(e);
+      });
   };
 
   const onInputBlur = () => {
@@ -134,18 +149,13 @@ export function CreateNewModal() {
   }, [appState?.requestPriorities]);
 
   useEffect(() => {
-    if (
-      _appStorage.title &&
-      _appStorage.title !== newRequestForm.values.evidenceTitle &&
-      (newRequestForm.values.evidenceTitle !== '' || _appStorage.title != null)
-    ) {
+    if (_appStorage.title && (newRequestForm.values.evidenceTitle !== '' || _appStorage.title != null)) {
       newRequestForm.setFieldValue('evidenceTitle', _appStorage.title);
       onInputBlur();
     }
 
     if (
       _appStorage.description &&
-      _appStorage.description !== newRequestForm.values.evidenceDescription &&
       (newRequestForm.values.evidenceDescription !== '' || _appStorage.description != null)
     ) {
       newRequestForm.setFieldValue('evidenceDescription', _appStorage.description);

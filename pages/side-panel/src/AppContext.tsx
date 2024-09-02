@@ -8,6 +8,7 @@ interface AppState {
   businessCategoryMapping: any[] | null;
   fields: any | null;
   components: any[];
+  mlComponentSuggestions: any[];
   domains: any[];
   ideaStatuses: any[] | null;
   ideaPriorities: any[] | null;
@@ -41,6 +42,7 @@ const initialAppState: AppState = {
   businessCategoryMapping: null,
   fields: null,
   components: [],
+  mlComponentSuggestions: [],
   domains: [],
   ideaStatuses: [],
   ideaPriorities: [],

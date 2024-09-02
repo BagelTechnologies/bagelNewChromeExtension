@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export const SolutionStatus: any = {
   new: 'New',
   backlog: 'Backlog',
@@ -50,3 +51,10 @@ export const RequestPriority: any = {
   important: 'Important',
   'nice-to-have': 'Nice To Have',
 };
+
+export enum UserTypes {
+  ADMIN = 'admin',
+  MANAGER = 'manager',
+  AGENT = 'agent',
+  CASUAL = 'casual',
+}

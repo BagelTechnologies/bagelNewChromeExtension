@@ -22,6 +22,7 @@ import { BusinessNameNotification } from '../icons/x-symbol-svgrepo-com';
 import { OverflownText } from '../OverflownText';
 import HtmlContent from '../HtmlContent';
 import { SourceIcon } from '@src/utils/SourceIcon';
+import { IconPlugConnected } from '@tabler/icons-react';
 
 const useStyles = createStyles(theme => ({
   resizeHandle: {
@@ -155,7 +156,7 @@ const TopCard = ({
     <Box
       h="100%"
       sx={{
-        overflowY: 'scroll',
+        overflowY: 'auto',
         borderRadius: '4px 4px 0 0',
       }}>
       <Box
@@ -260,12 +261,20 @@ const TopCard = ({
         {request.idea && (
           <Box
             mt="xs"
-            py="xs"
-            px="sm"
+            pt={4}
+            pb="xs"
+            pr={4}
+            pl="sm"
             sx={{
               borderLeft: '2px solid #5C5CEB99',
               backgroundColor: '#F8F9FA',
             }}>
+            <Group spacing={4} noWrap position="apart">
+              <Text color="dimmed" size={12}>
+                Related Product Idea:
+              </Text>
+              <IconPlugConnected color="#5C5CEB99" size={15} />
+            </Group>
             <OverflownText color="#585C68" size={15} weight={600} lineClamp={1}>
               {request.idea?.title}
             </OverflownText>
@@ -280,8 +289,8 @@ const TopCard = ({
                   fontSize: '14px',
                 },
               }}>
-              <Text size="sm" color="#3B4158" sx={{ p: { margin: '5px 0px' }, h2: { marginTop: 0 } }}>
-                <HtmlContent content={request.idea?.text} />
+              <Text size="sm" pr={3} color="#3B4158" sx={{ p: { margin: '5px 0px' }, h2: { marginTop: 0 } }}>
+                <HtmlContent content={request.idea?.description} />
               </Text>
             </Spoiler>
           </Box>

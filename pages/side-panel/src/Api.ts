@@ -41,6 +41,7 @@ export const getMyRequests = async (auth0: any, page: number, searchTerm: string
     throw e;
   }
 };
+
 export const listFields = async (auth0: any): Promise<any> => {
   try {
     const config = await getAuthHeaders(auth0);
@@ -70,6 +71,27 @@ export const getSuggestions = async ({
     //@ts-ignore
     const url = import.meta.env.VITE_ML_API_URL + '/suggestions/idea';
     const response = await axios.post(url, { title, description: text }, config);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getComponentSuggestions = async ({
+  title,
+  text,
+  auth0,
+}: {
+  title: string;
+  text: string;
+  auth0: any;
+}): Promise<any> => {
+  try {
+    const config = await getAuthHeaders(auth0);
+    //@ts-ignore
+    const url = import.meta.env.VITE_ML_API_URL + '/product_area';
+    const response = await axios.post(url, { title, text }, config);
     return response.data;
   } catch (e) {
     console.error(e);

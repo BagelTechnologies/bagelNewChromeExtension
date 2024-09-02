@@ -4,7 +4,7 @@ import { Box, LoadingOverlay, Text, Card, Group, ActionIcon, Center, UnstyledBut
 // eslint-disable-next-line import/named
 import { UseFormReturnType } from '@mantine/form';
 import { NewRequestFormType } from '.';
-import { IconChevronLeft, IconChevronRight, IconCircleArrowRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 // import { searchIdeas } from "../../Api";
 import { useEffect, useState } from 'react';
 // import { useDebouncedValue } from '@mantine/hooks';
@@ -95,7 +95,11 @@ export function SuggestedSearch({
               sx={{ textAlign: 'center', color: matchesIdeas.length === 0 || loading.suggestions ? 'gray' : 'black' }}
               size={14}
               w={35}>
-              {matchesIdeas.length > 0 ? `${slidesInView}/${matchesIdeas.length}` : matchesIdeas.length}
+              {matchesIdeas.length > 0
+                ? slidesInView == 1
+                  ? 'List'
+                  : `${(slidesInView || 0) - 1}/${matchesIdeas.length}`
+                : matchesIdeas.length}
             </Text>
             <ActionIcon onClick={handleNext}>
               <IconChevronRight size={16} />
@@ -158,14 +162,38 @@ export function SuggestedSearch({
                 w={'100%'}
                 onClick={() => embla?.scrollTo(index + 1)}
                 key={index}>
-                <Group spacing={8} noWrap position="apart">
-                  <OverflownText px={4} maw={'80vw'} size={14} weight={600} lineClamp={1}>
+                <Group spacing={8} noWrap position="apart" maw={'100%'}>
+                  <OverflownText px={4} size={14} weight={600} lineClamp={1}>
                     <Text span size={12} weight={400} color="dimmed">
                       #{index + 1}
                     </Text>{' '}
                     {idea.title}
                   </OverflownText>
-                  <Group spacing={8} noWrap>
+                  <Group
+                    spacing={8}
+                    noWrap
+                    sx={{
+                      flexDirection: 'row-reverse',
+                    }}>
+                    <Tooltip label={`Status: ${idea?.status || 'Unassigned'}`}>
+                      <Box>
+                        <Text
+                          px={4}
+                          size={12}
+                          weight={600}
+                          lineClamp={1}
+                          color="#5C5CEB"
+                          miw={'40px'}
+                          sx={{
+                            background: '#5C5CEB1A',
+                            borderRadius: 4,
+                            whiteSpace: 'break-spaces',
+                          }}>
+                          {idea?.status || 'Unassigned'}
+                        </Text>
+                      </Box>
+                    </Tooltip>
+
                     <Tooltip label={`Priority: ${idea.priority}`}>
                       <img
                         style={{ height: 16 }}
@@ -173,24 +201,7 @@ export function SuggestedSearch({
                         alt="nice to have"
                       />
                     </Tooltip>
-                    <Tooltip label="Status">
-                      <Box>
-                        <OverflownText
-                          px={4}
-                          maw={'80vw'}
-                          size={12}
-                          weight={600}
-                          lineClamp={1}
-                          color="#5C5CEB"
-                          sx={{
-                            background: '#5C5CEB1A',
-                            borderRadius: 4,
-                          }}>
-                          {idea?.status || 'Unassigned'}
-                        </OverflownText>
-                      </Box>
-                    </Tooltip>
-                    <IconCircleArrowRight size={14} color="#868e96" />
+                    {/* <IconCircleArrowRight size={14} color="#868e96" /> */}
                   </Group>
                 </Group>
               </UnstyledButton>

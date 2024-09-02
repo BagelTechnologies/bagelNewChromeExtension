@@ -25,3 +25,4 @@ chrome-extension/public/manifest.json
 dist.zip
 *.zip
 *.env.**
+.env.development

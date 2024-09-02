@@ -8,6 +8,8 @@ import { OverflownText } from './OverflownText';
 import HtmlContent from './HtmlContent';
 import { NewRequestFormType } from './CreateNewModal';
 import { IconArrowRight, IconExternalLink, IconLayersLinked, IconX } from '@tabler/icons-react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { UserTypes } from '@src/types/types';
 // import { BusinessNameNotification } from './icons/x-symbol-svgrepo-com';
 
 export function IdeasCard({
@@ -23,6 +25,7 @@ export function IdeasCard({
   >;
 }) {
   const { appState, records } = useAppContext();
+  const auth0 = useAuth0();
 
   const showDomain = appState.showDomain;
   //   appState?.objectCustomizations?.IdeaPageDisplay.display.domain;
@@ -108,9 +111,9 @@ export function IdeasCard({
       mx={2}>
       <Box
         p={10}
-        h={280}
+        h={302}
         sx={{
-          overflowY: 'scroll',
+          overflowY: 'auto',
           overflowX: 'unset',
         }}>
         <Group p={0} spacing={8} mb={5} noWrap>
@@ -171,9 +174,9 @@ export function IdeasCard({
               </td>
             </tr>
             <tr>
-              <td>No. of evidence</td>
+              <td>No. of companies</td>
               <td>
-                <Text weight={500}>{item?.owner?.name || 'Unassigned'}</Text>
+                <Text weight={500}>{item?.aggregations?.accounts?.count || '0'}</Text>
               </td>
             </tr>
           </tbody>
@@ -193,25 +196,8 @@ export function IdeasCard({
             p={8}
             sx={{
               borderTop: 'solid 1px #D8D8DB',
+              flexDirection: 'row-reverse',
             }}>
-            <Button
-              radius={4}
-              leftIcon={<IconExternalLink size={16} />}
-              h={32}
-              color="gray"
-              sx={{
-                color: 'black',
-              }}
-              variant="subtle"
-              disabled={ideaInRecords}
-              onClick={handleButtonClick}
-              component="a"
-              target="_blank"
-              //@ts-ignore
-              href={`${import.meta.env.VITE_MAIN_APP_URL}/idea/${item._id}`}>
-              Open
-            </Button>
-
             <Button
               radius={4}
               leftIcon={
@@ -238,6 +224,24 @@ export function IdeasCard({
               disabled={ideaInRecords}
               onClick={handleButtonClick}>
               {ideaInRecords ? 'Connected' : newRequestForm.values.ideaId == item._id ? 'Disconnect' : 'Connect'}
+            </Button>
+
+            <Button
+              radius={4}
+              leftIcon={<IconExternalLink size={16} />}
+              h={32}
+              color="gray"
+              sx={{
+                color: 'black',
+              }}
+              hidden={auth0?.user?.['bagel/role'] == UserTypes.CASUAL}
+              variant="subtle"
+              disabled={ideaInRecords}
+              component="a"
+              target="_blank"
+              //@ts-ignore
+              href={`${import.meta.env.VITE_MAIN_APP_URL}/idea/${item._id}`}>
+              Open
             </Button>
           </Group>
         </Tooltip>

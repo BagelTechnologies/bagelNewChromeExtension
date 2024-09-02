@@ -1,6 +1,6 @@
 {
   "name": "bagel-web-extension",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Bagel WebExtension",
   "private": true,
   "author": {

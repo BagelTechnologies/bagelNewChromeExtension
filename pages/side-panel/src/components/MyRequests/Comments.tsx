@@ -133,7 +133,7 @@ export function Comments({
       <Box
         h="100%"
         sx={{
-          overflowY: 'scroll',
+          overflowY: 'auto',
           paddingBottom: '64px',
         }}>
         {comments.map((comment: any, index: number) => (

@@ -11,6 +11,7 @@ import {
   // eslint-disable-next-line import/named
   SpacingValue,
   ActionIcon,
+  Tooltip,
 } from '@mantine/core';
 // eslint-disable-next-line import/named
 import { UseFormReturnType } from '@mantine/form';
@@ -22,9 +23,10 @@ import { closeAllModals } from '@mantine/modals';
 import { useAppContext } from '@src/AppContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SuggestedSearch } from './SuggestedSearch';
-import { IconArrowNarrowRight, IconX } from '@tabler/icons-react';
+import { IconArrowNarrowRight, IconSparkles, IconX } from '@tabler/icons-react';
 import { useStorageSuspense } from '@extension/shared';
 import { appStorage } from '@extension/storage';
+import { prepareProductAreaData } from './helpers';
 
 interface ItemProps extends ComponentPropsWithoutRef<'div'> {
   value: string;
@@ -33,12 +35,31 @@ interface ItemProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 // eslint-disable-next-line react/display-name
-const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ value, label, isChild, ...others }: ItemProps, ref) => (
-  <div ref={ref} {...others} key={value}>
-    <Text ml={isChild ? 'sm' : undefined}>{label}</Text>
-  </div>
-));
+const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ value, label, isChild, ...others }: ItemProps, ref) => {
+  const { appState } = useAppContext();
 
+  const isSuggested = appState.mlComponentSuggestions.some(suggestion => suggestion.componentId === value);
+
+  return (
+    <div ref={ref} {...others} key={value}>
+      <Tooltip hidden={!isSuggested} label={'Suggested by AI'}>
+        <Group spacing={7} position="apart">
+          {/* @ts-ignore */}
+          <Text
+            lineClamp={1}
+            ml={isChild ? 'sm' : undefined}
+            color={isSuggested && !others['data-selected'] ? '#5B60E3' : undefined}>
+            {label}
+          </Text>
+          {/* @ts-ignore */}
+          {isSuggested && (
+            <IconSparkles size={16} color={isSuggested && !others['data-selected'] ? '#5B60E3' : undefined} />
+          )}
+        </Group>
+      </Tooltip>
+    </div>
+  );
+});
 export function NewRequestForm({
   newRequestForm,
   onBlur,
@@ -228,51 +249,9 @@ export function NewRequestForm({
 
         <Select
           mx={mx}
-          // styles={{
-          //   label: {
-          //     fontSize: 16,
-          //   },
-          // }}
           label="Product area"
           placeholder="Choose Product area"
-          data={
-            appState?.components
-              ?.filter((component: any) => {
-                if (appState.showDomain) {
-                  return (
-                    appState?.domains
-                      ?.find((domain: any) => domain._id === newRequestForm.values.domainId)
-                      ?.name?.toLowerCase() === component?.domain?.toLowerCase()
-                  );
-                } else {
-                  return true;
-                }
-              })
-              .reduce((acc: any, component: any) => {
-                // Add the parent component
-                acc.push({
-                  label: component.name,
-                  value: component._id,
-                });
-
-                // Check if there are childComponents and add them
-                // if (
-                //   component.childComponents &&
-                //   component.childComponents.length > 0 &&
-                //   newRequestForm.values.ideaId !== ''
-                // ) {
-                //   component.childComponents.forEach((childComponent: any) => {
-                //     acc.push({
-                //       isChild: true,
-                //       label: childComponent.name,
-                //       value: childComponent._id,
-                //     });
-                //   });
-                // }
-
-                return acc;
-              }, []) || []
-          }
+          data={prepareProductAreaData(appState, newRequestForm)}
           {...newRequestForm.getInputProps('areaId')}
           disabled={
             newRequestForm.values.disabledInputs.includes('areaId') ||
