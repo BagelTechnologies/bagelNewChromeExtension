@@ -42,7 +42,7 @@ const initialState: StorageState = {
 };
 
 // Create storage with the initial state
-const storage = createStorage<StorageState>('app-storage-key', initialState, {
+const storage = createStorage<StorageState>(`${chrome.runtime.id}-app-storage-key`, initialState, {
   storageType: StorageType.Local,
   liveUpdate: true,
 });

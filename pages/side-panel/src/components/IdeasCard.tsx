@@ -170,7 +170,7 @@ export function IdeasCard({
             <tr>
               <td>Product area</td>
               <td>
-                <Text weight={500}>{includedComponent?.name || item?.component || 'Unassigned'}</Text>
+                <Text weight={500}>{includedComponent?.name || item?.componentObj?.name || 'Unassigned'}</Text>
               </td>
             </tr>
             <tr>

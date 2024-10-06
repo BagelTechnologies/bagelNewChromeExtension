@@ -20,18 +20,18 @@ const fetchUnreadNotifications = async (token: any) => {
 };
 
 // Check if the alarm already exists
-chrome.alarms.get('checkUnreadNotifications', existingAlarm => {
+chrome.alarms.get(`${chrome.runtime.id}-checkUnreadNotifications`, existingAlarm => {
   if (!existingAlarm) {
     // Only create the alarm if it doesn't already exist
-    chrome.alarms.create('checkUnreadNotifications', { periodInMinutes: 1 });
+    chrome.alarms.create(`${chrome.runtime.id}-checkUnreadNotifications`, { periodInMinutes: 1 });
   }
 });
 
 // Listen for the alarm event
 chrome.alarms.onAlarm.addListener(alarm => {
-  if (alarm.name === 'checkUnreadNotifications') {
+  if (alarm.name === `${chrome.runtime.id}-checkUnreadNotifications`) {
     // Log a message to the console every time the alarm triggers
-    console.log('Alarm triggered: checkUnreadNotifications');
+    console.log(`Alarm triggered: ${chrome.runtime.id}-checkUnreadNotifications`);
     //@ts-ignore
     console.log({ env: import.meta.env });
     appStorage.get().then(async appState => {

@@ -3,7 +3,7 @@ import { Tooltip, Text, TextProps } from '@mantine/core';
 import { useRef, useState, useEffect } from 'react';
 
 export function OverflownText({ children, maw, ...props }: TextProps) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLDivElement | HTMLAnchorElement | any | null>(null);
   const [isOverflown, setIsOverflown] = useState(false);
   useEffect(() => {
     const element = ref.current!;

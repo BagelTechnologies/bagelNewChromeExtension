@@ -23,6 +23,8 @@ import { OverflownText } from '../OverflownText';
 import HtmlContent from '../HtmlContent';
 import { SourceIcon } from '@src/utils/SourceIcon';
 import { IconPlugConnected } from '@tabler/icons-react';
+import { UserTypes } from '@src/types/types';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const useStyles = createStyles(theme => ({
   resizeHandle: {
@@ -71,6 +73,7 @@ export function RequestCard({
 }) {
   const { classes } = useStyles();
   const [comments, commentsHandlers] = useListState<any[]>(request.comments || []);
+
   const open = request._id.toString() === selectedRequest;
 
   useEffect(() => {
@@ -104,7 +107,7 @@ export function RequestCard({
           style={{
             height: 'calc(100vh - 105.7px - 1rem)',
           }}>
-          <Panel minSize={20} maxSize={80} defaultSize={50}>
+          <Panel minSize={20} maxSize={80} defaultSize={75}>
             <TopCard
               request={request}
               searchTerm={searchTerm}
@@ -115,7 +118,7 @@ export function RequestCard({
           {open && (
             <>
               <PanelResizeHandle className={classes.resizeHandle} />
-              <Panel minSize={20} maxSize={80} defaultSize={50}>
+              <Panel minSize={20} maxSize={80} defaultSize={25}>
                 <Comments
                   idea={{}}
                   origin={'chrome extension'}
@@ -151,6 +154,7 @@ const TopCard = ({
   setSelectedRequest: Dispatch<SetStateAction<string | null>>;
 }) => {
   const open = request._id.toString() === selectedRequest;
+  const auth0 = useAuth0();
 
   return (
     <Box
@@ -206,7 +210,7 @@ const TopCard = ({
                     background: '#5C5CEB1A',
                     borderRadius: 4,
                   }}>
-                  {request.status}
+                  {request.finalStatus}
                 </OverflownText>
               </Box>
             </Tooltip>
@@ -269,13 +273,32 @@ const TopCard = ({
               borderLeft: '2px solid #5C5CEB99',
               backgroundColor: '#F8F9FA',
             }}>
-            <Group spacing={4} noWrap position="apart">
+            <Group spacing={4} noWrap position="left">
+              <IconPlugConnected color="#5C5CEB99" size={13} />
               <Text color="dimmed" size={12}>
                 Related Product Idea:
               </Text>
-              <IconPlugConnected color="#5C5CEB99" size={15} />
             </Group>
-            <OverflownText color="#585C68" size={15} weight={600} lineClamp={1}>
+            {/* @ts-ignore */}
+            <OverflownText
+              {...(auth0?.user?.['bagel/role'] !== UserTypes.CASUAL
+                ? {
+                    component: 'a',
+                    /* @ts-ignore */
+                    href: `${import.meta.env.VITE_MAIN_APP_URL}/idea/${request.idea?._id}`,
+                    target: '_blank',
+                    sx: {
+                      ':hover': {
+                        color: '#5C5CEA',
+                        textDecoration: 'underline',
+                      },
+                    },
+                  }
+                : '')}
+              color="#585C68"
+              size={15}
+              weight={600}
+              lineClamp={1}>
               {request.idea?.title}
             </OverflownText>
 

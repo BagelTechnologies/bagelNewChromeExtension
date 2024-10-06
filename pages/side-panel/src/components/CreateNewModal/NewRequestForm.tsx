@@ -44,15 +44,16 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ value, label, isChil
     <div ref={ref} {...others} key={value}>
       <Tooltip hidden={!isSuggested} label={'Suggested by AI'}>
         <Group spacing={7} position="apart">
-          {/* @ts-ignore */}
           <Text
             lineClamp={1}
             ml={isChild ? 'sm' : undefined}
+            /* @ts-ignore */
             color={isSuggested && !others['data-selected'] ? '#5B60E3' : undefined}>
             {label}
           </Text>
           {/* @ts-ignore */}
           {isSuggested && (
+            /* @ts-ignore */
             <IconSparkles size={16} color={isSuggested && !others['data-selected'] ? '#5B60E3' : undefined} />
           )}
         </Group>
